@@ -1,27 +1,31 @@
+package streams;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import streams.interfaces.AbstractWriteStream;
+
 import java.io.*;
 
-public class FWriteStream {
-    
-    DataOutputStream ds;
+public class WriteStream implements AbstractWriteStream {
 
-    public void create(String fileLocation) {
+    private static final Logger logger = LoggerFactory.getLogger(FileGenerator.class);
+    private DataOutputStream ds;
+
+    public void create(final String fileLocation) {
         try {
             if(ds!=null) {
-                System.out.println("Closing stream before opening new location.");
+                logger.debug("Closing stream before opening new location.");
                 this.close();
             }
-
-            OutputStream outFile = new FileOutputStream( new File(fileLocation));
-            BufferedOutputStream bis = new BufferedOutputStream( outFile );
-            ds = new DataOutputStream(bis);
-
-        } catch (FileNotFoundException e) {
-            System.out.println("Error: Can't create file!" + fileLocation);
+            final OutputStream outFile = new FileOutputStream( new File(fileLocation));
+            ds = new DataOutputStream(outFile);
+        } catch (final IOException e) {
+            logger.error("", e);
         }
 
     }
 
-    public void write(Integer value) {
+    public void write(final Integer value) {
         try {
             ds.writeInt(value);
         } catch (IOException e) {
@@ -31,11 +35,9 @@ public class FWriteStream {
 
     public void close() {
         try {
-
-            System.out.println("Closing stream");
+            logger.debug("Closing stream");
             ds.flush();
             ds.close();
-
         } catch (IOException e) {
             System.out.println("Error closing output stream.");
             e.printStackTrace();

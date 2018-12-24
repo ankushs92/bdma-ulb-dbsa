@@ -1,34 +1,36 @@
-import java.io.*;
+package streams;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import util.Assert;
+
+import java.io.IOException;
 import java.util.Random;
 
 public class FileGenerator {
 
+    private static final Logger logger = LoggerFactory.getLogger(FileGenerator.class);
     private static Random r = new Random();
 
-
-
-
     private static int rand(int min, int max) {
-        if (min >= max) {
-            throw new IllegalArgumentException("Max must be greater than min and min > 0");
-        }
-        int number = r.nextInt((max - min) + 1) + min;
+        Assert.isTrue(min > 0, "min must be greater than 0");
+        Assert.isTrue(max > min, "Max must be greater than min");
+        final int number = r.nextInt((max - min) + 1) + min;
         return number;
     }
 
 
     public static void FileGenerator(String fileLocation, int size, int max) {
 
-        WriteStream outStream = new WriteStream();
+        final WriteStream outStream = new WriteStream();
         outStream.create(fileLocation);
 
-        //FileOutputStream fOut = new FileOutputStream(fileLocation);
         for (int i = 0; i < size; i++) {
-            Integer idx = rand(0, max);
+            final Integer idx = rand(0, max);
             outStream.write(idx);
             if (i % 10000 == 0)
                 outStream.flush();
-            System.out.println(i + " is " + idx);
+            logger.debug("Index file generated : {}", idx);
         }
         outStream.close();
 
