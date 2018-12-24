@@ -10,8 +10,8 @@ public class Assert {
         }
     }
 
-    public static <T> void  isTrue(final boolean exp, final String errorMsg) {
-        if(!exp) {
+    public static void isTrue(final boolean expression, final String errorMsg) {
+        if(!expression) {
             throw new IllegalArgumentException(errorMsg);
         }
     }

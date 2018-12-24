@@ -13,14 +13,14 @@ public class FileGenerator {
     private static Random r = new Random();
 
     private static int rand(int min, int max) {
-        Assert.isTrue(min > 0, "min must be greater than 0");
+        Assert.isTrue(min >= 0, "min must be greater than equal to 0");
         Assert.isTrue(max > min, "Max must be greater than min");
         final int number = r.nextInt((max - min) + 1) + min;
         return number;
     }
 
 
-    public static void FileGenerator(String fileLocation, int size, int max) {
+    public static void generateFile(String fileLocation, int size, int max) {
 
         final WriteStream outStream = new WriteStream();
         outStream.create(fileLocation);
@@ -39,9 +39,9 @@ public class FileGenerator {
 
     public static void main(String[] args) throws IOException {
 
-        String fileLocation = "src/main/resources/inputToy.data";
+        String fileLocation = "/Users/ankushsharma/Desktop/code/dbsa/data/inputToy.data";
 
-        FileGenerator(fileLocation, ((int) Math.pow(2, 5)), 15);
+        generateFile(fileLocation, ((int) Math.pow(2, 5)), 15);
 
         FReadStream stReader = new FReadStream();
         stReader.open(fileLocation);
