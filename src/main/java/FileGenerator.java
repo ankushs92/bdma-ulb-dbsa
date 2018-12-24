@@ -19,22 +19,19 @@ public class FileGenerator {
 
     public static void FileGenerator(String fileLocation, int size, int max) {
 
-        try {
-            StreamWriter outStream = new StreamWriter();
-            outStream.create(fileLocation);
+        WriteStream outStream = new WriteStream();
+        outStream.create(fileLocation);
 
-            //FileOutputStream fOut = new FileOutputStream(fileLocation);
-            for (int i = 0; i < size; i++) {
-                Integer idx = rand(0, max);
-                outStream.write(idx);
-                if (i % 10000 == 0)
-                    outStream.flush();
-                //System.out.println(idx);
-            }
-            outStream.close();
-        } catch (IOException e) {
-            System.out.println("Error: Can't create file!" + fileLocation);
+        //FileOutputStream fOut = new FileOutputStream(fileLocation);
+        for (int i = 0; i < size; i++) {
+            Integer idx = rand(0, max);
+            outStream.write(idx);
+            if (i % 10000 == 0)
+                outStream.flush();
+            System.out.println(i + " is " + idx);
         }
+        outStream.close();
+
     }
 
 
@@ -44,7 +41,7 @@ public class FileGenerator {
 
         FileGenerator(fileLocation, ((int) Math.pow(2, 5)), 15);
 
-        StreamReader stReader = new StreamReader();
+        FReadStream stReader = new FReadStream();
         stReader.open(fileLocation);
 
         for (int i = 0; i < 32; i++) {

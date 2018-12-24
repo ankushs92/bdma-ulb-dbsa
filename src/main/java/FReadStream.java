@@ -1,15 +1,14 @@
 import java.io.*;
 
-public class StreamReader {
+public class FReadStream {
 
     DataInputStream ds;
 
     public void open(String fileLocation) throws FileNotFoundException {
-        //sourceFile = fileLocation;
-        InputStream inputStream;
-        inputStream = new FileInputStream( new File(fileLocation) );
-        //System.out.println("Reading numbers..");
-        ds = new DataInputStream(inputStream);
+
+        InputStream inputStream = new FileInputStream( new File( fileLocation ) );
+        BufferedInputStream bis = new BufferedInputStream( inputStream );
+        ds = new DataInputStream( bis );
     }
 
     public Integer readNext() {
