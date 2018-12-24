@@ -1,7 +1,8 @@
-package streams;
+package streams.read;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import streams.FileGenerator;
 
 import java.io.*;
 

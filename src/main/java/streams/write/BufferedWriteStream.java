@@ -1,33 +1,43 @@
-package streams;
+package streams.write;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import streams.FileGenerator;
 import streams.interfaces.AbstractWriteStream;
+import util.WriteUtil;
 
 import java.io.*;
 
-public class FWriteStream implements AbstractWriteStream {
+public class BufferedWriteStream implements AbstractWriteStream {
 
     private static final Logger logger = LoggerFactory.getLogger(FileGenerator.class);
     private DataOutputStream ds;
 
+    private final int bufferSize;
+
+    BufferedWriteStream(final int bufferSize) {
+        this.bufferSize = bufferSize;
+    }
+
+
+    @Override
+    @SuppressWarnings("Duplicates")
     public void create(String fileLocation) {
         try {
             if(ds!=null) {
                 logger.debug("Closing stream before opening new location.");
                 this.close();
             }
-
             final OutputStream outFile = new FileOutputStream( new File(fileLocation));
-            final BufferedOutputStream bis = new BufferedOutputStream( outFile );
+            final BufferedOutputStream bis = new BufferedOutputStream(outFile, bufferSize); // The only change is here
             ds = new DataOutputStream(bis);
 
         } catch (final FileNotFoundException e) {
             logger.error("Error: Can't create file!" + fileLocation);
         }
-
     }
 
+    @Override
     public void write(final Integer value) {
         try {
             ds.writeInt(value);
@@ -36,22 +46,8 @@ public class FWriteStream implements AbstractWriteStream {
         }
     }
 
+    @Override
     public void close() {
-        try {
-            logger.debug("Closing stream : FWriteStream");
-            ds.flush();
-            ds.close();
-
-        } catch (final IOException e) {
-            logger.error("Error closing output stream : ", e);
-        }
-    }
-
-    public void flush() {
-        try {
-            ds.flush();
-        } catch (final IOException e) {
-            logger.error("Error flushing output stream : ", e);
-        }
+        WriteUtil.closeAndFlush(ds);
     }
 }

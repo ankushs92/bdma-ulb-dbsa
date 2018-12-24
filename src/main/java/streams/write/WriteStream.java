@@ -1,8 +1,10 @@
-package streams;
+package streams.write;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import streams.FileGenerator;
 import streams.interfaces.AbstractWriteStream;
+import util.WriteUtil;
 
 import java.io.*;
 
@@ -28,29 +30,18 @@ public class WriteStream implements AbstractWriteStream {
     public void write(final Integer value) {
         try {
             ds.writeInt(value);
-        } catch (IOException e) {
-            System.out.println("Problem writing Integer to output stream.");
+        } catch (final IOException e) {
+            logger.error("Problem writing Integer to output stream.", e);
         }
     }
 
     public void close() {
-        try {
-            logger.debug("Closing stream");
-            ds.flush();
-            ds.close();
-        } catch (IOException e) {
-            System.out.println("Error closing output stream.");
-            e.printStackTrace();
-        }
+        WriteUtil.closeAndFlush(ds);
     }
 
-    public void flush()
-    {
-        try {
-            ds.flush();
-        } catch (IOException e) {
-            System.out.println("Error flushing output stream.");
-            e.printStackTrace();
-        }
+
+    public void flush() {
+        WriteUtil.flush(ds);
     }
+
 }
