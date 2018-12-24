@@ -32,7 +32,7 @@ public class ReadStream {
 
     public boolean endOfStream() {
         try {
-            if (ds.available()>=1)
+            if (ds.available() == 0)
                 return true;
         } catch (final IOException e) {
             logger.error("Error checking endOfStream.");

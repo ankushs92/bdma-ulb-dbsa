@@ -39,7 +39,7 @@ public class FileGenerator {
 
     public static void main(String[] args) throws IOException {
 
-        String fileLocation = "/Users/ankushsharma/Desktop/code/dbsa/data/inputToy.data";
+        String fileLocation = "./src/main/resources/inputToy.data";
 
         generateFile(fileLocation, ((int) Math.pow(2, 5)), 15);
 

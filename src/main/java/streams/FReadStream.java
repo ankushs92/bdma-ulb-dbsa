@@ -13,8 +13,8 @@ public class FReadStream implements AbstractReadStream {
 
     public void open(String fileLocation) throws FileNotFoundException {
 
-        final InputStream inputStream = new FileInputStream( new File( fileLocation ) );
-        final BufferedInputStream bis = new BufferedInputStream( inputStream );
+        final InputStream inputStream = new FileInputStream(new File(fileLocation));
+        final BufferedInputStream bis = new BufferedInputStream(inputStream);
         ds = new DataInputStream(bis);
     }
 
@@ -32,9 +32,9 @@ public class FReadStream implements AbstractReadStream {
 
     public boolean endOfStream() {
         try {
-            if (ds.available() >= 1 )
+            if (ds.available() == 0)
                 return true;
-        } catch (IOException e) {
+        } catch (final IOException e) {
             logger.error("", e);
         }
         return false;
