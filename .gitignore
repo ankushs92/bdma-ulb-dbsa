@@ -18,6 +18,8 @@ WEB-INF/
 *.idea
 # ini files £
 *.ini
+*.data
+/src/main/resources/
 
 # OS Files #
 .DS_Store
