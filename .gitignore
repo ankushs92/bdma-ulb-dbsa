@@ -19,7 +19,7 @@ WEB-INF/
 # ini files £
 *.ini
 *.data
-/src/main/resources/
+/src/main/resources/*
 
 # OS Files #
 .DS_Store
