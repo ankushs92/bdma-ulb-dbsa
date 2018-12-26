@@ -91,6 +91,7 @@ public class MemMapReadStream implements AbstractReadStream {
         return true;
     }
 
+
     public long getFileSize() {
 
         try {

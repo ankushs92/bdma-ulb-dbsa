@@ -45,19 +45,18 @@ public class MultiwayMergeSort {
 
            // If sizeOfStreams = 256
            //First byte read is 4, then8 , 12 and so on adn
-           Queue<String> streamsQueue = new PriorityQueue<>();
+           final Queue<String> streamsQueue = new PriorityQueue<>();
            List<Integer> integers = new ArrayList<>(sizeOfStreams);
            int intsRead = 0;
            int filePosition = 1;
            while(!is.endOfStream()) {
                final int value = is.readNext();
                intsRead++;
-               System.out.println(intsRead);
                integers.add(value);
                if(intsRead % sizeOfStreams == 0) {
-                   Collections.sort(integers);
+                   Collections.sort(integers); //Merge sort
                    try(final MemoryMappedWriteStream os = new MemoryMappedWriteStream(memory)) {
-                       final String streamFileLoc = Constants.SORTED_DIR + "1_" + String.valueOf(filePosition);
+                       final String streamFileLoc = Constants.SORTED_DIR + "1_" + String.valueOf(filePosition) + ".data";
                        streamsQueue.add(streamFileLoc);
                        os.create(streamFileLoc);
                        filePosition++;
@@ -72,14 +71,14 @@ public class MultiwayMergeSort {
                }
            }
 
-          logger.info("Streams Queue References {}", streamsQueue);
-           while(!streamsQueue.isEmpty()) {
-               System.out.println(streamsQueue.remove());
-               System.out.println(streamsQueue);
+           logger.info("Streams Queue References {}", streamsQueue);
 
-           }
+//           final Queue<String> streamsLocations,
+//           final int bufferSize,
+//           final int d
 
-          Collections.sort(integers); // Used Merge sort, guarantees to give O(nlogn) performance
+           final MultiWayMerge multiWayMerge = new MultiWayMerge(streamsQueue, 1, d);
+           multiWayMerge.merge();
 
        }
        catch (final Exception ex) {
@@ -89,7 +88,7 @@ public class MultiwayMergeSort {
 
     public static void main(String[] args) throws FileNotFoundException {
         File file = new File("./src/main/resources/inputToy4.data");
-        MultiwayMergeSort m = new MultiwayMergeSort(file, 8, 0);
+        MultiwayMergeSort m = new MultiwayMergeSort(file, 8, 3);
 
         m.sortAndMerge();
     }
