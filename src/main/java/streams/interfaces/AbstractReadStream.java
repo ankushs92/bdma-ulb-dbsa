@@ -9,4 +9,6 @@ public interface AbstractReadStream extends AutoCloseable {
     Integer readNext();
 
     boolean endOfStream();
+
+    long getFileSize();
 }

@@ -24,15 +24,16 @@ public class MemoryMappedWriteStream implements AbstractWriteStream {
     private int bufferSize;
 
 
-    @Override
-    public void create(String fileLocation) {
-        int bufferSize = 4;
+    public MemoryMappedWriteStream(int bufferSize) {
         if(bufferSize * UNIT_SIZE < UNIT_SIZE){
             logger.warn("Buffer smaller than UNIT_SIZE. Setting to min write size = " + UNIT_SIZE + " Bytes.");
             bufferSize = 1; //One unit size
         }
         this.bufferSize = bufferSize * UNIT_SIZE;
+    }
 
+    @Override
+    public void create(String fileLocation) {
         try {
             randomAccessFile = new RandomAccessFile(fileLocation, WRITE_MODE);
             fileChannel = randomAccessFile.getChannel();
@@ -64,7 +65,6 @@ public class MemoryMappedWriteStream implements AbstractWriteStream {
     @Override
     public void close() {
         mappedByteBuffer.clear();
-
 
     }
 }

@@ -55,7 +55,6 @@ public class MemMapReadStream implements AbstractReadStream {
                 currentPosition = -1;
             }
             else{
-
                 try {
                     mappedByteBuffer.clear();
                     //Do no request more than required. We are reading.

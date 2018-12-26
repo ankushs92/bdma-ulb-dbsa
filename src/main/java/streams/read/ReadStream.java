@@ -44,6 +44,11 @@ public class ReadStream implements AbstractReadStream {
     }
 
     @Override
+    public long getFileSize() {
+        return 0;
+    }
+
+    @Override
     public void close() throws Exception {
         if(endOfStream()) {
             ds.close();

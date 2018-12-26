@@ -2,22 +2,19 @@ package algo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import streams.read.BufferedReadStream;
-import streams.write.BufferedWriteStream;
+import streams.read.MemMapReadStream;
+import streams.write.MemoryMappedWriteStream;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class MultiwayMergeSort {
 
     private static final Logger logger = LoggerFactory.getLogger(MultiwayMergeSort.class);
     private final File file;
-    private final int memory;
-    private final int d;
+    private final int memory; //M
+    private final int d; //d
 
     public MultiwayMergeSort(
             final File file,
@@ -30,33 +27,40 @@ public class MultiwayMergeSort {
         this.d = d;
     }
 
-    private static final int size = 256;
-
     public void sortAndMerge() throws FileNotFoundException {
-       final int fileSize = size;
-       try(final BufferedReadStream is = new BufferedReadStream(memory)) {
+       final int memoryInBytes = memory * 4;
+       try(final MemMapReadStream is = new MemMapReadStream(memoryInBytes)) {
            is.open(file.getAbsolutePath());
+           final int fileSizeInBytes = (int) is.getFileSize();
+           final int fileSize = fileSizeInBytes / 4;
+
 
            final int sizeOfStreams = (int) Math.ceil((double) fileSize / (double) memory);
-           logger.info("File Size is {} bytes", fileSize);
-           logger.info("Memory allocated : {}", memory);
-           logger.info("Number of Streams : {}", sizeOfStreams);
+           logger.info("File size in bytes {}", fileSizeInBytes);
+           logger.info("File Size is {} integers", fileSize);
+           logger.info("Memory allocated : {} integers", memory);
+           logger.info("Memory allocated : {} Bytes", memoryInBytes);
+           logger.info("Size of Streams : {} integers", sizeOfStreams);
+           logger.info("Number of Streams : {}", fileSize / sizeOfStreams);
+
            // If sizeOfStreams = 256
            //First byte read is 4, then8 , 12 and so on adn
-
+           Queue<String> streamsQueue = new PriorityQueue<>();
            List<Integer> integers = new ArrayList<>(sizeOfStreams);
            int intsRead = 0;
            int filePosition = 1;
            while(!is.endOfStream()) {
                final int value = is.readNext();
                intsRead++;
+               System.out.println(intsRead);
                integers.add(value);
-               if(sizeOfStreams % intsRead == 0) {
+               if(intsRead % sizeOfStreams == 0) {
                    Collections.sort(integers);
-                   try(final BufferedWriteStream os = new BufferedWriteStream(memory)) {
-                       os.create(Constants.SORTED_DIR + "1_" + String.valueOf(filePosition));
+                   try(final MemoryMappedWriteStream os = new MemoryMappedWriteStream(memory)) {
+                       final String streamFileLoc = Constants.SORTED_DIR + "1_" + String.valueOf(filePosition);
+                       streamsQueue.add(streamFileLoc);
+                       os.create(streamFileLoc);
                        filePosition++;
-                       System.out.println(integers);
                        for(final Integer intValue : integers) {
                            os.write(intValue);
                        }
@@ -67,15 +71,15 @@ public class MultiwayMergeSort {
                    integers = new ArrayList<>(sizeOfStreams);
                }
            }
-//        final BufferedWriteStream os = new BufferedWriteStream(memory);
-//        os.create(Constants.SORTED_DIR + String.valueOf(position));
-//        os.write(os.write(value));
-//        position++;
-//
-           System.out.println(integers);
-           Collections.sort(integers); // Used Merge sort, guarantees to give O(nlogn) performance
 
-           System.out.println(integers);
+          logger.info("Streams Queue References {}", streamsQueue);
+           while(!streamsQueue.isEmpty()) {
+               System.out.println(streamsQueue.remove());
+               System.out.println(streamsQueue);
+
+           }
+
+          Collections.sort(integers); // Used Merge sort, guarantees to give O(nlogn) performance
 
        }
        catch (final Exception ex) {
@@ -84,7 +88,7 @@ public class MultiwayMergeSort {
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        File file = new File("./src/main/resources/inputToy.data");
+        File file = new File("./src/main/resources/inputToy4.data");
         MultiwayMergeSort m = new MultiwayMergeSort(file, 8, 0);
 
         m.sortAndMerge();

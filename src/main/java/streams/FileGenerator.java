@@ -42,7 +42,7 @@ public class FileGenerator {
 
     public static void generateMappedFile(String fileLocation, int size, int max) {
 
-        final MemoryMappedWriteStream outStream = new MemoryMappedWriteStream();
+        final MemoryMappedWriteStream outStream = new MemoryMappedWriteStream(4);
         outStream.create(fileLocation);
 
         for (int i = 0; i < size; i++) {
@@ -57,9 +57,9 @@ public class FileGenerator {
 
     public static void main(String[] args) throws IOException {
 
-        String fileLocation = "./src/main/resources/inputToy3.data";
+        String fileLocation = "./src/main/resources/inputToy4.data";
 
-        generateFile(fileLocation, ((int) Math.pow(2, 13)), 8);
+        generateFile(fileLocation, ((int) Math.pow(2, 7)), 15);
 
 
         MemMapReadStream stReader = new MemMapReadStream(10);
