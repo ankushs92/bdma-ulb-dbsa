@@ -26,7 +26,7 @@ public class MemMapReadStream implements AbstractReadStream {
     private int bufferSize;
 
     public MemMapReadStream(int bufferSize) {
-        if(bufferSize < UNIT_SIZE){
+        if(bufferSize * UNIT_SIZE < UNIT_SIZE){
             logger.warn("Buffer smaller than UNIT_SIZE. Setting to min read size = " + UNIT_SIZE + " Bytes.");
             bufferSize = 1; //One unit size
         }
@@ -51,23 +51,24 @@ public class MemMapReadStream implements AbstractReadStream {
         currentPosition += UNIT_SIZE;
         if(mappedByteBuffer.remaining() < UNIT_SIZE)
         {
-            if(currentPosition > fileSize) {
+            if(currentPosition >= fileSize) {
                 currentPosition = -1;
             }
             else{
-                mappedByteBuffer.clear();
+
                 try {
-                    if(bufferSize > fileSize - currentPosition)
+                    mappedByteBuffer.clear();
+                    //Do no request more than required. We are reading.
+                    if(bufferSize > fileSize - (currentPosition)) {
                         bufferSize = (int) (fileSize - currentPosition);
-                    System.out.println("Buffer reload in position " + currentPosition);
-//                    mappedByteBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, currentPosition, bufferSize);
+                    }
+                    mappedByteBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, currentPosition, bufferSize);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }
         return readNumber;
-
     }
 
     public void close(){

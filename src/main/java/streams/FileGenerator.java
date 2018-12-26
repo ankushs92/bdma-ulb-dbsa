@@ -3,6 +3,9 @@ package streams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import streams.read.FReadStream;
+import streams.read.MemMapReadStream;
+import streams.read.ReadStream;
+import streams.write.MemoryMappedWriteStream;
 import streams.write.WriteStream;
 import util.Assert;
 
@@ -39,19 +42,32 @@ public class FileGenerator {
     }
 
 
+    public static void generateMappedFile(String fileLocation, int size, int max) {
+
+        final MemoryMappedWriteStream outStream = new MemoryMappedWriteStream();
+        outStream.create(fileLocation);
+
+        for (int i = 0; i < size; i++) {
+            final Integer idx = rand(0, max);
+            outStream.write(idx);
+
+            logger.debug("Index file generated : {}", idx);
+        }
+        outStream.close();
+
+    }
+
     public static void main(String[] args) throws IOException {
 
-        String fileLocation = "./src/main/resources/inputToy.data";
+        String fileLocation = "./src/main/resources/inputToy3.data";
 
-        generateFile(fileLocation, ((int) Math.pow(2, 5)), 15);
+        generateMappedFile(fileLocation, ((int) Math.pow(2, 7)), 15);
 
-        FReadStream stReader = new FReadStream();
+        MemMapReadStream stReader = new MemMapReadStream(10);
         stReader.open(fileLocation);
 
-        for (int i = 0; i < 32; i++) {
-
+        for (int i = 0; i < 130; i++) {
             System.out.println(i + " is " + stReader.readNext());
-
         }
     }
 }
