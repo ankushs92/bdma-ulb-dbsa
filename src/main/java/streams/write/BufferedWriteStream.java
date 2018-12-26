@@ -15,7 +15,7 @@ public class BufferedWriteStream implements AbstractWriteStream {
 
     private final int bufferSize;
 
-    BufferedWriteStream(final int bufferSize) {
+    public BufferedWriteStream(final int bufferSize) {
         this.bufferSize = bufferSize;
     }
 

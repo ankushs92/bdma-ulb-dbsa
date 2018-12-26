@@ -2,9 +2,7 @@ package streams;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import streams.read.FReadStream;
 import streams.read.MemMapReadStream;
-import streams.read.ReadStream;
 import streams.write.MemoryMappedWriteStream;
 import streams.write.WriteStream;
 import util.Assert;
@@ -61,12 +59,14 @@ public class FileGenerator {
 
         String fileLocation = "./src/main/resources/inputToy3.data";
 
-        generateMappedFile(fileLocation, ((int) Math.pow(2, 7)), 15);
+        generateFile(fileLocation, ((int) Math.pow(2, 13)), 8);
+
 
         MemMapReadStream stReader = new MemMapReadStream(10);
         stReader.open(fileLocation);
 
-        for (int i = 0; i < 130; i++) {
+
+        for (int i = 0; i < 2560; i++) {
             System.out.println(i + " is " + stReader.readNext());
         }
     }

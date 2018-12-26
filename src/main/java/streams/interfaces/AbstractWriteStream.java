@@ -1,6 +1,6 @@
 package streams.interfaces;
 
-public interface AbstractWriteStream {
+public interface AbstractWriteStream extends AutoCloseable {
 
     void create(String fileLocation);
 

@@ -2,7 +2,6 @@ package streams.read;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import streams.FileGenerator;
 import streams.interfaces.AbstractReadStream;
 
 import java.io.*;
@@ -12,7 +11,7 @@ public class BufferedReadStream implements AbstractReadStream {
     private static final Logger logger = LoggerFactory.getLogger(BufferedReadStream.class);
     private final int bufferSize;
 
-    BufferedReadStream(final int bufferSize) {
+    public BufferedReadStream(final int bufferSize) {
         this.bufferSize = bufferSize;
     }
 
@@ -32,7 +31,6 @@ public class BufferedReadStream implements AbstractReadStream {
             return ds.readInt();
         } catch (IOException e) {
             logger.error("Problem reading Integer from input stream.");
-            //e.printStackTrace();
             if(!endOfStream())
                 System.out.println("Reached end of stream?");
         }
@@ -48,5 +46,12 @@ public class BufferedReadStream implements AbstractReadStream {
             logger.error("", e);
         }
         return false;
+    }
+
+    @Override
+    public void close() throws Exception {
+        if(endOfStream()) {
+            ds.close();
+        }
     }
 }

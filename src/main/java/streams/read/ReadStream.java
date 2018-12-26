@@ -3,22 +3,22 @@ package streams.read;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import streams.FileGenerator;
+import streams.interfaces.AbstractReadStream;
 
 import java.io.*;
 
-public class ReadStream {
+public class ReadStream implements AbstractReadStream {
 
     private static final Logger logger = LoggerFactory.getLogger(FileGenerator.class);
     private DataInputStream ds;
 
+    @Override
     public void open(String fileLocation) throws FileNotFoundException {
-        //sourceFile = fileLocation;
-        final InputStream inputStream;
-        inputStream = new FileInputStream( new File(fileLocation) );
-        //System.out.println("Reading numbers..");
+        final InputStream inputStream  = new FileInputStream( new File(fileLocation) );
         ds = new DataInputStream(inputStream);
     }
 
+    @Override
     public Integer readNext() {
         try {
             return ds.readInt();
@@ -31,6 +31,7 @@ public class ReadStream {
         }
     }
 
+    @Override
     public boolean endOfStream() {
         try {
             if (ds.available() == 0)
@@ -40,5 +41,12 @@ public class ReadStream {
             e.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public void close() throws Exception {
+        if(endOfStream()) {
+            ds.close();
+        }
     }
 }

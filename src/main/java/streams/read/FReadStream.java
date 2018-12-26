@@ -40,4 +40,11 @@ public class FReadStream implements AbstractReadStream {
         }
         return false;
     }
+
+    @Override
+    public void close() throws Exception {
+        if(endOfStream()) {
+            ds.close();
+        }
+    }
 }

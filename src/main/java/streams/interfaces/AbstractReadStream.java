@@ -1,9 +1,8 @@
 package streams.interfaces;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public interface AbstractReadStream {
+public interface AbstractReadStream extends AutoCloseable {
 
     void open(String fileLocation) throws IOException;
 
