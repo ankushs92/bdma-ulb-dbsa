@@ -13,6 +13,7 @@ public class MultiWayMerge {
     private final Queue<String> streamsLocations;
     private final int bufferSize;
     private final int d;
+    private Queue<Integer> windowQueue;
 
     public MultiWayMerge(
             final Queue<String> streamsLocations,
@@ -28,8 +29,9 @@ public class MultiWayMerge {
     public void merge() {
 //         currentSublists;
         while(!streamsLocations.isEmpty() && streamsLocations.size() > 1){
-            List<MemMapReadStream> currentSublists = new ArrayList<>();
+            List<MemMapReadStream> currentSubLists = new ArrayList<>();
             List<Integer> window = new ArrayList<>();
+            windowQueue = new LinkedList<>();
             String mergedFileKey = "";
             for (int i = 0; i < d && i <= streamsLocations.size(); i++) {
                 MemMapReadStream bufferManager = new MemMapReadStream(bufferSize);
@@ -37,15 +39,17 @@ public class MultiWayMerge {
                     String fileKey = streamsLocations.remove();
                     bufferManager.open(SORTED_DIR + fileKey + SORTED_EXT);
                     mergedFileKey += fileKey + "_";
-                    currentSublists.add(bufferManager);
-                    window.add(bufferManager.readNext());
+                    int firstElement = bufferManager.readNext();
+                    currentSubLists.add(bufferManager);
+                    window.add(firstElement);
+                    windowQueue.add(firstElement);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
             mergedFileKey = mergedFileKey.substring(0, mergedFileKey.length()-1);
 
-            mergeSort(currentSublists, window, SORTED_DIR + mergedFileKey + SORTED_EXT);
+            mergeSort(currentSubLists, window, SORTED_DIR + mergedFileKey + SORTED_EXT);
             streamsLocations.add(mergedFileKey);
             System.out.println(streamsLocations);
         }
@@ -56,9 +60,11 @@ public class MultiWayMerge {
         output.create(fileName);
         System.out.println("Creating file " + fileName);
         int minimumIndex;
+        int indexOfMinimum;
         for (int i = 0; i < kStreams.size(); i++) {
             while (window.size()>0){
                 minimumIndex = window.indexOf(Collections.min(window));
+                indexOfMinimum = windowQueue.peek();
                 output.write(window.get(minimumIndex));
                 //Get the next Int in the stream or remove it if no more data
                 if(!kStreams.get(minimumIndex).endOfStream())
