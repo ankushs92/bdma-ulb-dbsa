@@ -12,25 +12,24 @@ public class FReadStream implements AbstractReadStream {
     private static final Logger logger = LoggerFactory.getLogger(FileGenerator.class);
     private DataInputStream ds;
 
+    @Override
     public void open(String fileLocation) throws FileNotFoundException {
         final InputStream inputStream = new FileInputStream(new File(fileLocation));
         final BufferedInputStream bis = new BufferedInputStream(inputStream);
         ds = new DataInputStream(bis);
     }
 
-    @SuppressWarnings("Duplicates")
+    @Override
     public Integer readNext() {
         try {
             return ds.readInt();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             logger.error("Problem reading Integer from input stream.");
-            //e.printStackTrace();
-            if(!endOfStream())
-                System.out.println("Reached end of stream?");
         }
         return null;
     }
 
+    @Override
     public boolean endOfStream() {
         try {
             if (ds.available() == 0)
@@ -42,8 +41,8 @@ public class FReadStream implements AbstractReadStream {
     }
 
     @Override
-    public long getFileSize() {
-        return 0;
+    public long getFileSize() throws Exception {
+        throw new IllegalAccessException("Please refer to MemMapReadStream implementation for file size");
     }
 
     @Override

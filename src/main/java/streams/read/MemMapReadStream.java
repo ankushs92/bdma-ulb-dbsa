@@ -20,9 +20,7 @@ public class MemMapReadStream implements AbstractReadStream {
     private RandomAccessFile randomAccessFile;
     private FileChannel fileChannel;
     private long fileSize = 0;
-    private long currentPosition = 0;
-
-
+    private long bytesRead = 0;
     private int bufferSize;
 
     public MemMapReadStream(int bufferSize) {
@@ -38,69 +36,60 @@ public class MemMapReadStream implements AbstractReadStream {
         randomAccessFile = new RandomAccessFile(fileLocation, READ_MODE);
         fileChannel = randomAccessFile.getChannel();
         fileSize = fileChannel.size();
-        currentPosition = 0;
         mappedByteBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, bufferSize);
     }
 
     @Override
     public Integer readNext() {
-        if(currentPosition < 0)
-            return null;
-        Integer readNumber = null;
-        readNumber = mappedByteBuffer.getInt();
-        currentPosition += UNIT_SIZE;
-        if(mappedByteBuffer.remaining() < UNIT_SIZE)
-        {
-            if(currentPosition >= fileSize) {
-                currentPosition = -1;
+        final Integer readNumber  = mappedByteBuffer.getInt();
+        bytesRead += UNIT_SIZE;
+        if(mappedByteBuffer.remaining() < UNIT_SIZE) {
+            if(bytesRead >= fileSize) {
+                bytesRead = -1;
             }
-            else{
+            else {
                 try {
                     mappedByteBuffer.clear();
                     //Do no request more than required. We are reading.
-                    if(bufferSize > fileSize - (currentPosition)) {
-                        bufferSize = (int) (fileSize - currentPosition);
+                    if(bufferSize > (fileSize - bytesRead)) {
+                        bufferSize = (int) (fileSize - bytesRead);
                     }
-                    mappedByteBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, currentPosition, bufferSize);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    mappedByteBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, bytesRead, bufferSize);
+                }
+                catch (final Exception e) {
+                    logger.error("", e);
                 }
             }
         }
         return readNumber;
     }
 
+    @Override
     public void close(){
         try {
             fileChannel.close();
             randomAccessFile.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (final IOException e) {
+            logger.error("", e);
         }
 
     }
 
     @Override
     public boolean endOfStream() {
-        if(currentPosition < 0) {
+        if(bytesRead < 0) {
             close();
             return true;
         }
-        if(currentPosition < fileSize)
+        if(bytesRead < fileSize)
             return false;
         return true;
     }
 
 
-    public long getFileSize() {
-
-        try {
-            return fileSize;
-        } catch (
-                Exception e) {
-            e.printStackTrace();
-        }
-        return -1;
+    @Override
+    public long getFileSize() throws Exception {
+        return fileSize;
     }
 
 }

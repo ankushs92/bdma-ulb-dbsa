@@ -33,29 +33,27 @@ public class MemoryMappedWriteStream implements AbstractWriteStream {
     }
 
     @Override
-    public void create(String fileLocation) {
+    public void create(final String fileLocation) {
         try {
             randomAccessFile = new RandomAccessFile(fileLocation, WRITE_MODE);
             fileChannel = randomAccessFile.getChannel();
             fileSize = fileChannel.size();
             currentPosition = 0;
-            mappedByteBuffer = fileChannel.map(FileChannel.MapMode.READ_WRITE, 0, this.bufferSize);
-        } catch (IOException e) {
-            e.printStackTrace();
+            mappedByteBuffer = fileChannel.map(FileChannel.MapMode.READ_WRITE, 0, bufferSize);
         }
-
-
+        catch (final IOException e) {
+            logger.error("", e);
+        }
 
     }
 
     @Override
-    public void write(Integer value) {
+    public void write(final Integer value) {
         if (mappedByteBuffer.remaining() < UNIT_SIZE) {
-            System.out.println("Buffer is full, remaining" + mappedByteBuffer.hasRemaining());
             try {
-                mappedByteBuffer = fileChannel.map(FileChannel.MapMode.READ_WRITE, currentPosition, this.bufferSize);
-            } catch (IOException e) {
-                e.printStackTrace();
+                mappedByteBuffer = fileChannel.map(FileChannel.MapMode.READ_WRITE, currentPosition, bufferSize);
+            } catch (final IOException e) {
+                logger.error("", e);
             }
         }
         mappedByteBuffer.putInt(value);
@@ -64,7 +62,14 @@ public class MemoryMappedWriteStream implements AbstractWriteStream {
 
     @Override
     public void close() {
-        mappedByteBuffer.clear();
+        try {
+            mappedByteBuffer.clear();
+            randomAccessFile.close();
+            fileChannel.close();
+
+        } catch (final IOException e) {
+            logger.error("", e);
+        }
 
     }
 }
