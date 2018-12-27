@@ -9,6 +9,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
+import static algo.Constants.SORTED_DIR;
+import static algo.Constants.SORTED_EXT;
+
 public class MultiwayMergeSort {
 
     private static final Logger logger = LoggerFactory.getLogger(MultiwayMergeSort.class);
@@ -45,7 +48,7 @@ public class MultiwayMergeSort {
 
            // If sizeOfStreams = 256
            //First byte read is 4, then8 , 12 and so on
-           final Queue<String> streamsQueue = new PriorityQueue<>();
+           final Queue<String> streamsQueue = new LinkedList<>();
            List<Integer> integers = new ArrayList<>(sizeOfStreams);
            int intsRead = 0;
            int filePosition = 1;
@@ -56,8 +59,8 @@ public class MultiwayMergeSort {
                if(intsRead % sizeOfStreams == 0) {
                    Collections.sort(integers); //Merge sort
                    try(final MemoryMappedWriteStream os = new MemoryMappedWriteStream(memory)) {
-                       final String streamFileLoc = Constants.SORTED_DIR + "1_" + String.valueOf(filePosition) + ".data";
-                       streamsQueue.add(streamFileLoc);
+                       final String streamFileLoc = SORTED_DIR + String.valueOf(filePosition) + SORTED_EXT;
+                       streamsQueue.add(String.valueOf(filePosition));
                        os.create(streamFileLoc);
                        filePosition++;
                        for(final Integer intValue : integers) {
