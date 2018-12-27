@@ -22,7 +22,7 @@ public class BufferedWriteStream implements AbstractWriteStream {
 
     @Override
     @SuppressWarnings("Duplicates")
-    public void create(String fileLocation) {
+    public void create(final String fileLocation) {
         try {
             if(ds!=null) {
                 logger.debug("Closing stream before opening new location.");
