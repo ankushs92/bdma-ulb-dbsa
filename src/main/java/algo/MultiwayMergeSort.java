@@ -44,7 +44,7 @@ public class MultiwayMergeSort {
            logger.info("Number of Streams : {}", fileSize / sizeOfStreams);
 
            // If sizeOfStreams = 256
-           //First byte read is 4, then8 , 12 and so on adn
+           //First byte read is 4, then8 , 12 and so on
            final Queue<String> streamsQueue = new PriorityQueue<>();
            List<Integer> integers = new ArrayList<>(sizeOfStreams);
            int intsRead = 0;
@@ -72,10 +72,6 @@ public class MultiwayMergeSort {
            }
 
            logger.info("Streams Queue References {}", streamsQueue);
-
-//           final Queue<String> streamsLocations,
-//           final int bufferSize,
-//           final int d
 
            final MultiWayMerge multiWayMerge = new MultiWayMerge(streamsQueue, 1, d);
            multiWayMerge.merge();

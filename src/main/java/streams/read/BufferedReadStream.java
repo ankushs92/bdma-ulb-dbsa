@@ -25,14 +25,12 @@ public class BufferedReadStream implements AbstractReadStream {
     }
 
     @Override
-    @SuppressWarnings("Duplicates")
     public Integer readNext() {
         try {
             return ds.readInt();
-        } catch (IOException e) {
+        }
+        catch (final IOException e) {
             logger.error("Problem reading Integer from input stream.");
-            if(!endOfStream())
-                System.out.println("Reached end of stream?");
         }
         return null;
     }
@@ -40,8 +38,7 @@ public class BufferedReadStream implements AbstractReadStream {
     @Override
     public boolean endOfStream() {
         try {
-            if (ds.available() == 0)
-                return true;
+            return ds.available() == 0;
         } catch (final IOException e) {
             logger.error("", e);
         }
@@ -49,8 +46,8 @@ public class BufferedReadStream implements AbstractReadStream {
     }
 
     @Override
-    public long getFileSize() {
-        return 0;
+    public long getFileSize() throws IllegalAccessException {
+        throw new IllegalAccessException("Please refer to MemMapReadStream implementation for file size");
     }
 
     @Override

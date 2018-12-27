@@ -14,7 +14,7 @@ public class ReadStream implements AbstractReadStream {
 
     @Override
     public void open(String fileLocation) throws FileNotFoundException {
-        final InputStream inputStream  = new FileInputStream( new File(fileLocation) );
+        final InputStream inputStream  = new FileInputStream(new File(fileLocation));
         ds = new DataInputStream(inputStream);
     }
 
@@ -24,28 +24,23 @@ public class ReadStream implements AbstractReadStream {
             return ds.readInt();
         } catch (final IOException e) {
             logger.error("Problem reading Integer from input stream {}", e);
-            //e.printStackTrace();
-            if(!endOfStream())
-                logger.debug("Reached end of stream?");
-            return null;
         }
+        return null;
     }
 
     @Override
     public boolean endOfStream() {
         try {
-            if (ds.available() == 0)
-                return true;
+            return ds.available() == 0;
         } catch (final IOException e) {
-            logger.error("Error checking endOfStream.");
-            e.printStackTrace();
+            logger.error("Error checking endOfStream.", e);
         }
         return false;
     }
 
     @Override
-    public long getFileSize() {
-        return 0;
+    public long getFileSize() throws Exception {
+        throw new IllegalAccessException("Please refer to MemMapReadStream implementation for file size");
     }
 
     @Override
