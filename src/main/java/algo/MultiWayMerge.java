@@ -11,7 +11,7 @@ public class MultiWayMerge {
     private final Queue<String> streamsLocations;
     private final int bufferSize;
     private final int d;
-
+    private final String rootDir = "./src/main/resources/sorted/";
     public MultiWayMerge(
             final Queue<String> streamsLocations,
             final int bufferSize,
@@ -37,22 +37,20 @@ public class MultiWayMerge {
                     String fileKey = streamsLocations.remove();
                     System.out.println(fileKey);
                     bufferManager.open(fileKey);
-                    mergedFileKey += "_" + names.get(i);
+                    mergedFileKey += names.get(i) + "_";
                     currentSublists.add(bufferManager);
                     window.add(bufferManager.readNext());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            System.out.println(currentSublists);
-            System.out.println(window);
+            mergedFileKey = rootDir + mergedFileKey + ".data";
             mergeSort(currentSublists, window, mergedFileKey);
-
             streamsLocations.add(mergedFileKey);
         }
     }
 
-    public void mergeSort(List<MemMapReadStream> kStreams, List<Integer> window, String fileName) {
+    public String mergeSort(List<MemMapReadStream> kStreams, List<Integer> window, String fileName) {
         MemoryMappedWriteStream output = new MemoryMappedWriteStream(1);
         output.create(fileName);
 
@@ -62,6 +60,7 @@ public class MultiWayMerge {
             while (window.size()>0){
                 minimumIndex = window.indexOf(Collections.min(window));
                 System.out.println("Minimum " + minimumIndex + " with value " + window.get(minimumIndex));
+                output.write(window.get(minimumIndex));
                 Integer newValue = kStreams.get(minimumIndex).readNext();
                 if(newValue == null) {
                     window.remove(minimumIndex);
