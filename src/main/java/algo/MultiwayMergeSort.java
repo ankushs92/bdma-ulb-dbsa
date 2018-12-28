@@ -75,10 +75,8 @@ public class MultiwayMergeSort {
            }
 
            logger.info("Streams Queue References {}", streamsQueue);
-
            final MultiWayMerge multiWayMerge = new MultiWayMerge(streamsQueue, 1, d);
            multiWayMerge.merge();
-
        }
        catch (final Exception ex) {
            logger.error("", ex);

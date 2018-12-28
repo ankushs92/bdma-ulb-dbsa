@@ -71,7 +71,6 @@ public class MemoryMappedWriteStream implements AbstractWriteStream {
             mappedByteBuffer.clear();
             randomAccessFile.close();
             fileChannel.close();
-
         } catch (final IOException e) {
             logger.error("", e);
         }

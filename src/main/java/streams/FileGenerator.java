@@ -2,12 +2,11 @@ package streams;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import streams.read.MemMapReadStream;
 import streams.write.MemoryMappedWriteStream;
 import streams.write.WriteStream;
 import util.Assert;
 
-import java.io.IOException;
+import java.io.File;
 import java.util.Random;
 
 public class FileGenerator {
@@ -42,33 +41,25 @@ public class FileGenerator {
 
     public static void generateMappedFile(String fileLocation, int size, int max) {
 
-        final MemoryMappedWriteStream outStream = new MemoryMappedWriteStream(Integer.MAX_VALUE);
+        final MemoryMappedWriteStream outStream = new MemoryMappedWriteStream(10000);
         outStream.create(fileLocation);
 
         for (int i = 0; i < size; i++) {
             final Integer idx = (int) Math.random() * Integer.MAX_VALUE;
             outStream.write(idx);
-
-            //logger.debug("Index file generated : {}", idx);
+            System.out.println(idx);
+            logger.debug("Index file generated : {}", idx);
         }
         outStream.close();
 
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
-        String fileLocation = "./src/main/resources/inputToy7.data";
-
+        String fileLocation = "./src/main/resources/benchmark/implementation_1_2/536870912_bytes_134217728_integers";
+        new File(fileLocation).delete();
         generateMappedFile(fileLocation, ((int) 2000000), Integer.MAX_VALUE);
 
-
-//        MemMapReadStream stReader = new MemMapReadStream(10);
-//        stReader.open(fileLocation);
-//
-//
-//        for (int i = 0; i < 512; i++) {
-//            System.out.println(i + " is " + stReader.readNext());
-//        }
     }
 }
 

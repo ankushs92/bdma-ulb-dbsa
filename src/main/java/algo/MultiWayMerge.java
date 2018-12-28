@@ -62,7 +62,7 @@ public class MultiWayMerge {
         int minimumIndex;
         int indexOfMinimum;
         for (int i = 0; i < kStreams.size(); i++) {
-            while (window.size()>0){
+            while(window.size() > 0) {
                 minimumIndex = window.indexOf(Collections.min(window));
                 indexOfMinimum = windowQueue.peek();
                 output.write(window.get(minimumIndex));
