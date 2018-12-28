@@ -24,10 +24,10 @@ public class MemMapReadStream implements AbstractReadStream {
     private int bufferSize;
 
     public MemMapReadStream(int bufferSize) {
-//        if(bufferSize * UNIT_SIZE < UNIT_SIZE){
-//            logger.warn("Buffer smaller than UNIT_SIZE. Setting to min read size = " + UNIT_SIZE + " Bytes.");
-//            bufferSize = 1; //One unit size
-//        }
+        if(bufferSize * UNIT_SIZE < UNIT_SIZE){
+            logger.warn("Buffer smaller than UNIT_SIZE. Setting to min read size = " + UNIT_SIZE + " Bytes.");
+            bufferSize = 1; //One unit size
+        }
         this.bufferSize = bufferSize * UNIT_SIZE;
     }
 
@@ -85,7 +85,6 @@ public class MemMapReadStream implements AbstractReadStream {
             return false;
         return true;
     }
-
 
     @Override
     public long getFileSize() throws Exception {

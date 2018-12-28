@@ -42,11 +42,13 @@ public class FileGenerator {
 
     public static void generateMappedFile(String fileLocation, int size, int max) {
 
-        final MemoryMappedWriteStream outStream = new MemoryMappedWriteStream(Integer.MAX_VALUE);
+        final MemoryMappedWriteStream outStream = new MemoryMappedWriteStream(32);
         outStream.create(fileLocation);
 
         for (int i = 0; i < size; i++) {
-            final Integer idx = (int) Math.random() * Integer.MAX_VALUE;
+
+            //final Integer idx = (int) Math.random() * max;
+            final Integer idx = rand(0, max);
             outStream.write(idx);
 
             //logger.debug("Index file generated : {}", idx);
@@ -57,10 +59,9 @@ public class FileGenerator {
 
     public static void main(String[] args) throws IOException {
 
-        String fileLocation = "./src/main/resources/inputToy7.data";
+        String fileLocation = "./src/main/resources/inputToy1.data";
 
-        generateMappedFile(fileLocation, ((int) 2000000), Integer.MAX_VALUE);
-
+        generateMappedFile(fileLocation, ((int) 64), 15);
 
 //        MemMapReadStream stReader = new MemMapReadStream(10);
 //        stReader.open(fileLocation);
@@ -69,6 +70,7 @@ public class FileGenerator {
 //        for (int i = 0; i < 512; i++) {
 //            System.out.println(i + " is " + stReader.readNext());
 //        }
+
     }
 }
 

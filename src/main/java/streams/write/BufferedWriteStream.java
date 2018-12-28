@@ -33,7 +33,7 @@ public class BufferedWriteStream implements AbstractWriteStream {
             ds = new DataOutputStream(bis);
 
         } catch (final FileNotFoundException e) {
-            logger.error("Error: Can't create file!" + fileLocation);
+            logger.error("Error: Can't create file! " + fileLocation);
         }
     }
 
@@ -42,7 +42,7 @@ public class BufferedWriteStream implements AbstractWriteStream {
         try {
             ds.writeInt(value);
         } catch (IOException e) {
-            logger.error("Problem writing Integer to output stream : ", e);
+            logger.error("Problem writing Integer to output stream: ", e);
         }
     }
 
