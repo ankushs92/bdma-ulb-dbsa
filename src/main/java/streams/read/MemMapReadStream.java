@@ -23,8 +23,8 @@ public class MemMapReadStream implements AbstractReadStream {
     private long bytesRead = 0;
     private int bufferSize;
 
-    public MemMapReadStream(int bufferSize) {
-//        if(bufferSize * UNIT_SIZE < UNIT_SIZE){
+    public MemMapReadStream(final int bufferSize) {
+//        if(bufferSize * UNIT_SIZE <= UNIT_SIZE){
 //            logger.warn("Buffer smaller than UNIT_SIZE. Setting to min read size = " + UNIT_SIZE + " Bytes.");
 //            bufferSize = 1; //One unit size
 //        }
@@ -44,7 +44,6 @@ public class MemMapReadStream implements AbstractReadStream {
         if(bytesRead < 0) {
             return null;
         }
-
         final Integer readNumber  = mappedByteBuffer.getInt();
         bytesRead += UNIT_SIZE;
         if(mappedByteBuffer.remaining() < UNIT_SIZE) {

@@ -13,7 +13,8 @@ public class WriteUtil {
     public static void flush(final DataOutputStream ds) {
         try {
             ds.flush();
-        } catch (final IOException e) {
+        }
+        catch (final IOException e) {
             logger.error("Error flushing output stream : ", e);
         }
     }

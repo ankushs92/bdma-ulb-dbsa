@@ -6,14 +6,14 @@ import streams.write.MemoryMappedWriteStream;
 import java.io.IOException;
 import java.util.*;
 
-import static algo.Constants.*;
+import static algo.Constants.SORTED_DIR;
+import static algo.Constants.SORTED_EXT;
 
 public class MultiWayMerge {
 
     private final Queue<String> streamsLocations;
     private final int bufferSize;
     private final int d;
-    private Queue<Integer> windowQueue;
 
     public MultiWayMerge(
             final Queue<String> streamsLocations,
@@ -28,10 +28,10 @@ public class MultiWayMerge {
 
     public void merge() {
 //         currentSublists;
-        while(!streamsLocations.isEmpty() && streamsLocations.size() > 1){
+        while(!streamsLocations.isEmpty() && streamsLocations.size() > 1) {
             List<MemMapReadStream> currentSubLists = new ArrayList<>();
             List<Integer> window = new ArrayList<>();
-            windowQueue = new LinkedList<>();
+            Queue<Integer> windowQueue = new LinkedList<>();
             String mergedFileKey = "";
             for (int i = 0; i < d && i <= streamsLocations.size(); i++) {
                 MemMapReadStream bufferManager = new MemMapReadStream(bufferSize);
@@ -49,13 +49,13 @@ public class MultiWayMerge {
             }
             mergedFileKey = mergedFileKey.substring(0, mergedFileKey.length()-1);
 
-            mergeSort(currentSubLists, window, SORTED_DIR + mergedFileKey + SORTED_EXT);
+            mergeSort(currentSubLists, window, SORTED_DIR + mergedFileKey + SORTED_EXT, windowQueue);
             streamsLocations.add(mergedFileKey);
             System.out.println(streamsLocations);
         }
     }
 
-    public void mergeSort(List<MemMapReadStream> kStreams, List<Integer> window, String fileName) {
+    public void mergeSort(List<MemMapReadStream> kStreams, List<Integer> window, String fileName, Queue<Integer> windowQueue) {
         MemoryMappedWriteStream output = new MemoryMappedWriteStream(1);
         output.create(fileName);
         System.out.println("Creating file " + fileName);

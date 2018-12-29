@@ -13,10 +13,10 @@ public class FWriteStream implements AbstractWriteStream {
     private static final Logger logger = LoggerFactory.getLogger(FileGenerator.class);
     private DataOutputStream ds;
 
-    @SuppressWarnings("Duplicates")
+    @Override
     public void create(final String fileLocation) {
         try {
-            if(ds!=null) {
+            if(ds != null) {
                 logger.debug("Closing stream before opening new location.");
                 this.close();
             }
@@ -30,6 +30,7 @@ public class FWriteStream implements AbstractWriteStream {
 
     }
 
+    @Override
     public void write(final Integer value) {
         try {
             ds.writeInt(value);
@@ -38,6 +39,7 @@ public class FWriteStream implements AbstractWriteStream {
         }
     }
 
+    @Override
     public void close() {
         WriteUtil.closeAndFlush(ds);
     }

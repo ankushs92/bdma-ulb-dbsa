@@ -2,9 +2,8 @@ package streams;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import streams.interfaces.AbstractWriteStream;
 import streams.write.MemoryMappedWriteStream;
-import streams.write.WriteStream;
-import util.Assert;
 
 import java.io.File;
 import java.util.Random;
@@ -14,38 +13,37 @@ public class FileGenerator {
     private static final Logger logger = LoggerFactory.getLogger(FileGenerator.class);
     private static Random r = new Random();
 
-    private static int rand(int min, int max) {
-        Assert.isTrue(min >= 0, "min must be greater than equal to 0");
-        Assert.isTrue(max > min, "Max must be greater than min");
-        final int number = r.nextInt((max - min) + 1) + min;
-        return number;
+    private final File outputFile;
+    private final AbstractWriteStream writeStream;
+    private final int size;
+
+    public FileGenerator(
+            final File outputFile,
+            final AbstractWriteStream writeStream,
+            final int size
+    )
+    {
+        this.outputFile = outputFile;
+        this.writeStream = writeStream;
+        this.size = size;
     }
 
-
-    public static void generateFile(String fileLocation, int size, int max) {
-
-        final WriteStream outStream = new WriteStream();
-        outStream.create(fileLocation);
-
-        for (int i = 0; i < size; i++) {
-            final Integer idx = rand(0, max);
-            outStream.write(idx);
-            if (i % 10000 == 0)
-                outStream.flush();
-            logger.debug("Index file generated : {}", idx);
+    public void writeToFile() {
+        writeStream.create(outputFile.getPath());
+        for(int i = 0 ; i < size; i ++) {
+            final int value = (int) (Math.random() * Integer.MAX_VALUE);
+            writeStream.write(value);
         }
-        outStream.close();
-
     }
 
 
-    public static void generateMappedFile(String fileLocation, int size, int max) {
+    public static void generateMappedFile(String fileLocation, int size) {
 
         final MemoryMappedWriteStream outStream = new MemoryMappedWriteStream(10000);
         outStream.create(fileLocation);
 
         for (int i = 0; i < size; i++) {
-            final Integer idx = (int) Math.random() * Integer.MAX_VALUE;
+            final Integer idx = (int) (Math.random() * Integer.MAX_VALUE);
             outStream.write(idx);
             System.out.println(idx);
             logger.debug("Index file generated : {}", idx);
@@ -56,9 +54,14 @@ public class FileGenerator {
 
     public static void main(String[] args) {
 
-        String fileLocation = "./src/main/resources/benchmark/implementation_1_2/536870912_bytes_134217728_integers";
-        new File(fileLocation).delete();
-        generateMappedFile(fileLocation, ((int) 2000000), Integer.MAX_VALUE);
+//        String fileLocation = "./src/main/resources/benchmark/implementation_1_2/64mb_16777216_integers";
+//        new File(fileLocation).delete();
+//        generateMappedFile(fileLocation, 16777216);
+//
+
+        String fileLocation1 = "./src/main/resources/benchmark/implementation_1_2/128mb_33554432_integers";
+        new File(fileLocation1).delete();
+        generateMappedFile(fileLocation1, 33554432);
 
     }
 }

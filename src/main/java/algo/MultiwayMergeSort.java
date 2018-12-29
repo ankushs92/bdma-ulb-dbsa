@@ -37,7 +37,6 @@ public class MultiwayMergeSort {
            final int fileSizeInBytes = (int) is.getFileSize();
            final int fileSize = fileSizeInBytes / 4;
 
-
            final int sizeOfStreams = (int) Math.ceil((double) fileSize / (double) memory);
            logger.info("File size in bytes {}", fileSizeInBytes);
            logger.info("File Size is {} integers", fileSize);
@@ -46,7 +45,7 @@ public class MultiwayMergeSort {
            logger.info("Size of Streams : {} integers", sizeOfStreams);
            logger.info("Number of Streams : {}", fileSize / sizeOfStreams);
 
-           // If sizeOfStreams = 256
+           //If sizeOfStreams = 256
            //First byte read is 4, then8 , 12 and so on
            final Queue<String> streamsQueue = new LinkedList<>();
            List<Integer> integers = new ArrayList<>(sizeOfStreams);
@@ -59,8 +58,9 @@ public class MultiwayMergeSort {
                if(intsRead % sizeOfStreams == 0) {
                    Collections.sort(integers); //Merge sort
                    try(final MemoryMappedWriteStream os = new MemoryMappedWriteStream(memory)) {
-                       final String streamFileLoc = SORTED_DIR + String.valueOf(filePosition) + SORTED_EXT;
-                       streamsQueue.add(String.valueOf(filePosition));
+                       final String filePos = String.valueOf(filePosition);
+                       final String streamFileLoc = SORTED_DIR + filePos + SORTED_EXT;
+                       streamsQueue.add(filePos);
                        os.create(streamFileLoc);
                        filePosition++;
                        for(final Integer intValue : integers) {

@@ -13,6 +13,7 @@ public class WriteStream implements AbstractWriteStream {
     private static final Logger logger = LoggerFactory.getLogger(FileGenerator.class);
     private DataOutputStream ds;
 
+    @Override
     public void create(final String fileLocation) {
         try {
             if(ds!=null) {
@@ -27,6 +28,7 @@ public class WriteStream implements AbstractWriteStream {
 
     }
 
+    @Override
     public void write(final Integer value) {
         try {
             ds.writeInt(value);
@@ -35,6 +37,7 @@ public class WriteStream implements AbstractWriteStream {
         }
     }
 
+    @Override
     public void close() {
         WriteUtil.closeAndFlush(ds);
     }
