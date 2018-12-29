@@ -41,6 +41,10 @@ public class MemMapReadStream implements AbstractReadStream {
 
     @Override
     public Integer readNext() {
+        if(bytesRead < 0) {
+            return null;
+        }
+
         final Integer readNumber  = mappedByteBuffer.getInt();
         bytesRead += UNIT_SIZE;
         if(mappedByteBuffer.remaining() < UNIT_SIZE) {
@@ -49,7 +53,7 @@ public class MemMapReadStream implements AbstractReadStream {
             }
             else {
                 try {
-                    mappedByteBuffer.clear();
+//                    mappedByteBuffer.clear();
                     //Do no request more than required. We are reading.
                     if(bufferSize > (fileSize - bytesRead)) {
                         bufferSize = (int) (fileSize - bytesRead);
