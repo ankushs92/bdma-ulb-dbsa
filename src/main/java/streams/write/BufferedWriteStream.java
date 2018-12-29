@@ -19,9 +19,7 @@ public class BufferedWriteStream implements AbstractWriteStream {
         this.bufferSize = bufferSize;
     }
 
-
     @Override
-    @SuppressWarnings("Duplicates")
     public void create(final String fileLocation) {
         try {
             if(ds!=null) {
@@ -31,9 +29,9 @@ public class BufferedWriteStream implements AbstractWriteStream {
             final OutputStream outFile = new FileOutputStream( new File(fileLocation));
             final BufferedOutputStream bis = new BufferedOutputStream(outFile, bufferSize); // The only change is here
             ds = new DataOutputStream(bis);
-
-        } catch (final FileNotFoundException e) {
-            logger.error("Error: Can't create file! " + fileLocation);
+        }
+        catch (final FileNotFoundException e) {
+            logger.error("Error: Can't create file!" + fileLocation);
         }
     }
 

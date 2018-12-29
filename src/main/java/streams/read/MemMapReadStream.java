@@ -44,7 +44,6 @@ public class MemMapReadStream implements AbstractReadStream {
         if(bytesRead < 0) {
             return null;
         }
-
         final Integer readNumber  = mappedByteBuffer.getInt();
         bytesRead += UNIT_SIZE;
         if(mappedByteBuffer.remaining() < UNIT_SIZE) {
