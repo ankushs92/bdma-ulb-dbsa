@@ -7,6 +7,7 @@ import streams.write.MemoryMappedWriteStream;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 import static algo.Constants.SORTED_DIR;
@@ -33,17 +34,19 @@ public class MultiwayMergeSort {
     public void sortAndMerge() throws FileNotFoundException {
        final int memoryInBytes = memory * 4;
        try(final MemMapReadStream is = new MemMapReadStream(memoryInBytes)) {
-           is.open(file.getAbsolutePath());
+           is.open(file.getPath());
            final int fileSizeInBytes = (int) is.getFileSize();
            final int fileSize = fileSizeInBytes / 4;
 
-           final int sizeOfStreams = (int) Math.ceil((double) fileSize / (double) memory);
+           final int numberOfStreams  = (int) Math.ceil((double) fileSize / (double) memory);
+           final int sizeOfStreams  = fileSize / numberOfStreams;
+
            logger.info("File size in bytes {}", fileSizeInBytes);
            logger.info("File Size is {} integers", fileSize);
            logger.info("Memory allocated : {} integers", memory);
            logger.info("Memory allocated : {} Bytes", memoryInBytes);
            logger.info("Size of Streams : {} integers", sizeOfStreams);
-           logger.info("Number of Streams : {}", fileSize / sizeOfStreams);
+           logger.info("Number of Streams : {}", numberOfStreams);
 
            //If sizeOfStreams = 256
            //First byte read is 4, then8 , 12 and so on
@@ -56,6 +59,7 @@ public class MultiwayMergeSort {
                intsRead++;
                integers.add(value);
                if(intsRead % sizeOfStreams == 0) {
+                   System.out.println("length " + integers.size());
                    Collections.sort(integers); //Merge sort
                    try(final MemoryMappedWriteStream os = new MemoryMappedWriteStream(memory)) {
                        final String filePos = String.valueOf(filePosition);
@@ -75,7 +79,7 @@ public class MultiwayMergeSort {
            }
 
            logger.info("Streams Queue References {}", streamsQueue);
-           final MultiWayMerge multiWayMerge = new MultiWayMerge(streamsQueue, 1, d);
+           final MultiWayMerge multiWayMerge = new MultiWayMerge(streamsQueue, memory, d);
            multiWayMerge.merge();
        }
        catch (final Exception ex) {
@@ -83,10 +87,31 @@ public class MultiwayMergeSort {
        }
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
-        File file = new File("./src/main/resources/inputToy4.data");
-        MultiwayMergeSort m = new MultiwayMergeSort(file, 8, 3);
+    public static void main(String[] args) throws IOException {
+        final File file = new File("./src/main/resources/benchmark/implementation_1_2/4mb_1048576_integers");
+        final MultiwayMergeSort m = new MultiwayMergeSort(file,100000, 3);
+        File outputFile = new File("./src/main/resources/sorted/10_11_1_2_3_4_5_6_7_8_9.data");
+//        m.sortAndMerge();
 
-        m.sortAndMerge();
+        MemMapReadStream r = new MemMapReadStream(10000);
+//        r.open(outputFile.getPath());
+        r.open(outputFile.getPath());
+        List<Integer> ints = new ArrayList<>();
+        while(!r.endOfStream()) {
+            ints.add(r.readNext());
+        }
+        for(int i = 0 ; i < ints.size() -1 ; i++) {
+            if(i > 0 ) {
+                int current = ints.get(i);
+                int previous = ints.get(i - 1);
+                if(previous > current) {
+                    System.out.println("Previous " + previous);
+                    System.out.println("Current " + current);
+
+                }
+            }
+        }
+        System.out.println(ints);
+
     }
 }

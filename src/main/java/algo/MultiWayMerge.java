@@ -27,8 +27,8 @@ public class MultiWayMerge {
     }
 
     public void merge() {
-//         currentSublists;
         while(!streamsLocations.isEmpty() && streamsLocations.size() > 1) {
+            System.out.println(streamsLocations);
             List<MemMapReadStream> currentSubLists = new ArrayList<>();
             List<Integer> window = new ArrayList<>();
             Queue<Integer> windowQueue = new LinkedList<>();
@@ -58,13 +58,10 @@ public class MultiWayMerge {
     public void mergeSort(List<MemMapReadStream> kStreams, List<Integer> window, String fileName, Queue<Integer> windowQueue) {
         MemoryMappedWriteStream output = new MemoryMappedWriteStream(1);
         output.create(fileName);
-        System.out.println("Creating file " + fileName);
         int minimumIndex;
-        int indexOfMinimum;
         for (int i = 0; i < kStreams.size(); i++) {
             while(window.size() > 0) {
                 minimumIndex = window.indexOf(Collections.min(window));
-                indexOfMinimum = windowQueue.peek();
                 output.write(window.get(minimumIndex));
                 //Get the next Int in the stream or remove it if no more data
                 if(!kStreams.get(minimumIndex).endOfStream())

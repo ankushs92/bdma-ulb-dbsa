@@ -45,8 +45,8 @@ public class FileGenerator {
         for (int i = 0; i < size; i++) {
             final Integer idx = (int) (Math.random() * Integer.MAX_VALUE);
             outStream.write(idx);
-            System.out.println(idx);
-            logger.debug("Index file generated : {}", idx);
+//            System.out.println(idx);
+//            logger.debug("Index file generated : {}", idx);
         }
         outStream.close();
 

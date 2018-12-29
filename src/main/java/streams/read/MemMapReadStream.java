@@ -36,6 +36,8 @@ public class MemMapReadStream implements AbstractReadStream {
         randomAccessFile = new RandomAccessFile(fileLocation, READ_MODE);
         fileChannel = randomAccessFile.getChannel();
         fileSize = fileChannel.size();
+        if(bufferSize>fileSize)
+            bufferSize = (int)fileSize;
         mappedByteBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, bufferSize);
     }
 

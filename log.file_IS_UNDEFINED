@@ -1,0 +1,7 @@
+19:43:42.161 [main] INFO  algo.MultiwayMergeSort  - File size in bytes 1048576
+19:43:42.165 [main] INFO  algo.MultiwayMergeSort  - File Size is 262144 integers
+19:43:42.165 [main] INFO  algo.MultiwayMergeSort  - Memory allocated : 2 integers
+19:43:42.165 [main] INFO  algo.MultiwayMergeSort  - Memory allocated : 8 Bytes
+19:43:42.165 [main] INFO  algo.MultiwayMergeSort  - Size of Streams : 131072 integers
+19:43:42.165 [main] INFO  algo.MultiwayMergeSort  - Number of Streams : 2
+19:43:43.922 [main] INFO  algo.MultiwayMergeSort  - Streams Queue References [1, 2]
