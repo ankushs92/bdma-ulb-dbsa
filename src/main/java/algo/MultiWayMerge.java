@@ -16,6 +16,7 @@ public class MultiWayMerge {
     private final Queue<String> streamsLocations;
     private final int bufferSize;
     private final int d;
+    private Queue<StreamsPriorityQueue> removeStreams = new PriorityQueue<>();
 
     public MultiWayMerge(
             final Queue<String> streamsLocations,
@@ -64,7 +65,6 @@ public class MultiWayMerge {
         //Create the ouput stream. We consider size 1 for output
         System.out.println(fileName);
         MemoryMappedWriteStream output = new MemoryMappedWriteStream(1);
-        Queue<StreamsPriorityQueue> removeStreams = new PriorityQueue<>();
         output.create(fileName);
         while(!kStreams.isEmpty()) {
             StreamsPriorityQueue streamMinValue = kStreams.remove();
@@ -76,17 +76,21 @@ public class MultiWayMerge {
                 kStreams.add(streamMinValue);
             }
             else{
+                //add the stream to be deleted with its file
                 removeStreams.add(streamMinValue);
             }
         }
         //We finish the merge, close the output.
         output.close();
+
+
+    }
+    public void removeTemporalFiles(){
         //We merged the files, we can remove them.
         while(!removeStreams.isEmpty()) {
             StreamsPriorityQueue streamToRemove = removeStreams.remove();
             streamToRemove.deleteFile();
         }
-
     }
 }
 

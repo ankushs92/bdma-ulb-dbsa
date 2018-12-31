@@ -57,11 +57,15 @@ public class FileGenerator {
 //        String fileLocation = "./src/main/resources/benchmark/implementation_1_2/64mb_16777216_integers";
 //        new File(fileLocation).delete();
 //        generateMappedFile(fileLocation, 16777216);
-//
 
         String fileLocation1 = "./src/main/resources/benchmark/128mb_32000000_integers.data";
         new File(fileLocation1).delete();
         generateMappedFile(fileLocation1, 32000000);
+
+//        String fileLocation1 = "./src/main/resources/benchmark/implementation_1_2/1mb_262144_integers";
+//        new File(fileLocation1).delete();
+//        generateMappedFile(fileLocation1, 262144);
+
 
     }
 }
