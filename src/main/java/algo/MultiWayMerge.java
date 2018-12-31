@@ -1,6 +1,8 @@
 package algo;
 
+import streams.interfaces.AbstractReadStream;
 import streams.read.MemMapReadStream;
+import streams.read.ReadStream;
 import streams.write.MemoryMappedWriteStream;
 
 import java.io.IOException;
@@ -27,56 +29,64 @@ public class MultiWayMerge {
     }
 
     public void merge() {
+        System.out.println(streamsLocations);
         while(!streamsLocations.isEmpty() && streamsLocations.size() > 1) {
-            System.out.println(streamsLocations);
-            List<MemMapReadStream> currentSubLists = new ArrayList<>();
-            List<Integer> window = new ArrayList<>();
-            Queue<Integer> windowQueue = new LinkedList<>();
+            Queue<StreamsPriorityQueue> streamsQueue = new PriorityQueue<>();
             String mergedFileKey = "";
             for (int i = 0; i < d && i <= streamsLocations.size(); i++) {
-                MemMapReadStream bufferManager = new MemMapReadStream(bufferSize);
-                try {
-                    String fileKey = streamsLocations.remove();
-                    bufferManager.open(SORTED_DIR + fileKey + SORTED_EXT);
-                    mergedFileKey += fileKey + "_";
-                    int firstElement = bufferManager.readNext();
-                    currentSubLists.add(bufferManager);
-                    window.add(firstElement);
-                    windowQueue.add(firstElement);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            mergedFileKey = mergedFileKey.substring(0, mergedFileKey.length()-1);
+                MemMapReadStream stream = new MemMapReadStream(bufferSize);
+                    StreamsPriorityQueue streamManager = new StreamsPriorityQueue(0, stream);
+                    try {
+                        String fileKey = streamsLocations.remove();
+                        streamManager.getStream().open(SORTED_DIR + fileKey + SORTED_EXT);
+                        streamManager.readNext();
+                        streamsQueue.add(streamManager);
+                        mergedFileKey += fileKey + "_";
 
-            mergeSort(currentSubLists, window, SORTED_DIR + mergedFileKey + SORTED_EXT, windowQueue);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+            }
+            //We use the file key as name but in the last one we call it finalMergedFile
+            if(streamsQueue.size()>2)
+                mergedFileKey = mergedFileKey.substring(0, mergedFileKey.length()-1);
+            else
+                mergedFileKey = "finalMergedFile";
+
+
+            System.out.println("We have " + streamsQueue.size() + " with name " + mergedFileKey);
+            mergeSort(streamsQueue, SORTED_DIR + mergedFileKey + SORTED_EXT);
             streamsLocations.add(mergedFileKey);
-            System.out.println(streamsLocations);
         }
     }
 
-    public void mergeSort(List<MemMapReadStream> kStreams, List<Integer> window, String fileName, Queue<Integer> windowQueue) {
+    public void mergeSort(Queue<StreamsPriorityQueue> kStreams, String fileName) {
+        //Create the ouput stream. We consider size 1 for output
+        System.out.println(fileName);
         MemoryMappedWriteStream output = new MemoryMappedWriteStream(1);
+        Queue<StreamsPriorityQueue> removeStreams = new PriorityQueue<>();
         output.create(fileName);
-        int minimumIndex;
-        for (int i = 0; i < kStreams.size(); i++) {
-            while(window.size() > 0) {
-                minimumIndex = window.indexOf(Collections.min(window));
-                output.write(window.get(minimumIndex));
-                //Get the next Int in the stream or remove it if no more data
-                if(!kStreams.get(minimumIndex).endOfStream())
-                {
-                    Integer newValue = kStreams.get(minimumIndex).readNext();
-                    window.set(minimumIndex, newValue);
-                }
-                else {
-                        //Stream exhausted, remove it.
-                        window.remove(minimumIndex);
-                        kStreams.remove(minimumIndex);
-                }
+        while(!kStreams.isEmpty()) {
+            StreamsPriorityQueue streamMinValue = kStreams.remove();
+            int minValue = streamMinValue.getIntValue();
+            output.write(minValue);
+            if(!streamMinValue.getStream().endOfStream())
+            {
+                streamMinValue.readNext();
+                kStreams.add(streamMinValue);
+            }
+            else{
+                removeStreams.add(streamMinValue);
             }
         }
+        //We finish the merge, close the output.
+        output.close();
+        //We merged the files, we can remove them.
+        while(!removeStreams.isEmpty()) {
+            StreamsPriorityQueue streamToRemove = removeStreams.remove();
+            streamToRemove.deleteFile();
+        }
+
     }
-
-
 }
+

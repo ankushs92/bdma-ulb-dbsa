@@ -44,7 +44,6 @@ public class MemoryMappedWriteStream implements AbstractWriteStream {
         catch (final IOException e) {
             logger.error("", e);
         }
-
     }
 
     @Override
@@ -63,9 +62,6 @@ public class MemoryMappedWriteStream implements AbstractWriteStream {
     @Override
     public void close() {
         try {
-            System.out.println("File size " + fileSize);
-            System.out.println("Current position " + currentPosition);
-            System.out.println("Buffer size " + bufferSize);
             //Since we are not interested in append data we make sure to cut where
             //we stopped writing.
             fileChannel.truncate(currentPosition);

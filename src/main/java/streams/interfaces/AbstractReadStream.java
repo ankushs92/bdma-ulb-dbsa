@@ -11,5 +11,6 @@ public interface AbstractReadStream extends AutoCloseable {
     boolean endOfStream();
 
     long getFileSize() throws Exception;
+    String getFileLocation();
 
 }

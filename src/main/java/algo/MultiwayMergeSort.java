@@ -88,30 +88,30 @@ public class MultiwayMergeSort {
     }
 
     public static void main(String[] args) throws IOException {
-        final File file = new File("./src/main/resources/benchmark/implementation_1_2/4mb_1048576_integers");
-        final MultiwayMergeSort m = new MultiwayMergeSort(file,100000, 3);
-        File outputFile = new File("./src/main/resources/sorted/10_11_1_2_3_4_5_6_7_8_9.data");
-//        m.sortAndMerge();
+        final File file = new File("./src/main/resources/1mb_262144_integers_1.data");
+        final MultiwayMergeSort m = new MultiwayMergeSort(file,8192, 3);
+        m.sortAndMerge();
 
-        MemMapReadStream r = new MemMapReadStream(10000);
-//        r.open(outputFile.getPath());
-        r.open(outputFile.getPath());
-        List<Integer> ints = new ArrayList<>();
-        while(!r.endOfStream()) {
-            ints.add(r.readNext());
-        }
-        for(int i = 0 ; i < ints.size() -1 ; i++) {
-            if(i > 0 ) {
-                int current = ints.get(i);
-                int previous = ints.get(i - 1);
-                if(previous > current) {
-                    System.out.println("Previous " + previous);
-                    System.out.println("Current " + current);
 
-                }
-            }
-        }
-        System.out.println(ints);
+
+//        MemMapReadStream r = new MemMapReadStream(10000);
+//       r.open("./src/main/resources/sorted/22_23_24_25_26_27_28_29_30_31_32_1_2_3_4_5_6_7_8_9_10_11_12_13_14_15_16_17_18_19_20_21.data");
+//        List<Integer> ints = new ArrayList<>();
+//        while(!r.endOfStream()) {
+//            ints.add(r.readNext());
+//        }
+//        for(int i = 0 ; i < ints.size() -1 ; i++) {
+//            if(i > 0 ) {
+//                int current = ints.get(i);
+//                int previous = ints.get(i - 1);
+//                if(previous > current) {
+//                    System.out.println("Previous " + previous);
+//                    System.out.println("Current " + current);
+//
+//                }
+//            }
+//        }
+//        System.out.println(ints);
 
     }
 }

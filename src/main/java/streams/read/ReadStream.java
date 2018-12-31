@@ -44,6 +44,11 @@ public class ReadStream implements AbstractReadStream {
     }
 
     @Override
+    public String getFileLocation() {
+        return null;
+    }
+
+    @Override
     public void close() throws Exception {
         if(endOfStream()) {
             ds.close();
