@@ -43,8 +43,4 @@ public class WriteStream implements AbstractWriteStream {
     }
 
 
-    public void flush() {
-        WriteUtil.flush(ds);
-    }
-
 }

@@ -22,9 +22,9 @@ public class BufferedWriteStream implements AbstractWriteStream {
     @Override
     public void create(final String fileLocation) {
         try {
-            if(ds!=null) {
+            if(ds != null) {
                 logger.debug("Closing stream before opening new location.");
-                this.close();
+                close();
             }
             final OutputStream outFile = new FileOutputStream( new File(fileLocation));
             final BufferedOutputStream bis = new BufferedOutputStream(outFile, bufferSize); // The only change is here
@@ -39,7 +39,7 @@ public class BufferedWriteStream implements AbstractWriteStream {
     public void write(final Integer value) {
         try {
             ds.writeInt(value);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             logger.error("Problem writing Integer to output stream: ", e);
         }
     }

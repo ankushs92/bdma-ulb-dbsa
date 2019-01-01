@@ -1,10 +1,7 @@
 package benchmark;
 
-import streams.read.MemMapReadStream;
-
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class StreamsBenchmarkRunner {

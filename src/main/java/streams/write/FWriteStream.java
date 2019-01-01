@@ -34,7 +34,7 @@ public class FWriteStream implements AbstractWriteStream {
     public void write(final Integer value) {
         try {
             ds.writeInt(value);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             logger.error("Problem writing Integer to output stream : ", e);
         }
     }

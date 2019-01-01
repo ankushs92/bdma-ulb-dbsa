@@ -1,6 +1,9 @@
 package algo;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import streams.interfaces.AbstractReadStream;
+import util.Assert;
 
 import java.io.File;
 import java.util.Objects;
@@ -8,40 +11,40 @@ import java.util.Objects;
 
 public class StreamsPriorityQueue implements Comparable<StreamsPriorityQueue>{
 
+    private static final Logger logger = LoggerFactory.getLogger(StreamsPriorityQueue.class);
+
     private int intValue;
     private final AbstractReadStream readStream;
 
     StreamsPriorityQueue(
-            final int value, AbstractReadStream readStream
+            final int value,
+            final AbstractReadStream readStream
     )
     {
+        Assert.notNull(readStream, "readStream cannot be null");
         this.intValue = value;
         this.readStream = readStream;
     }
 
-    public int readNext()
-    {
-        this.intValue = this.readStream.readNext();
-        return this.intValue;
+    public int readNext() {
+        intValue = readStream.readNext();
+        return intValue;
     }
 
-    public int deleteFile()
-    {
+    void deleteFile() {
         try {
-            System.out.println("Delete file " + this.readStream.getFileLocation());
-            this.readStream.close();
-            new File(this.readStream.getFileLocation()).delete();
-        } catch (Exception e) {
-            e.printStackTrace();
+            readStream.close();
+            new File(readStream.getFileLocation()).delete();
+        } catch (final Exception e) {
+            logger.error("", e);
         }
-        return 0;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        StreamsPriorityQueue that = (StreamsPriorityQueue) o;
+        final StreamsPriorityQueue that = (StreamsPriorityQueue) o;
         return intValue == that.intValue;
     }
 

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import streams.read.MemMapReadStream;
 import streams.write.MemoryMappedWriteStream;
+import util.Assert;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,12 +27,16 @@ public class MultiwayMergeSort {
             final int d
     )
     {
+        Assert.notNull(file, "file cannot be null");
+        Assert.isTrue(memory > 0, "memory has to be greater than 0");
+        Assert.notNull(d > 0, "d hs to be greater than 0");
+
         this.file = file;
         this.memory = memory;
         this.d = d;
     }
 
-    public void sortAndMerge() throws FileNotFoundException {
+    public void sortAndMerge() {
        final int memoryInBytes = memory * 4;
        try(final MemMapReadStream is = new MemMapReadStream(memoryInBytes)) {
            is.open(file.getPath());
@@ -48,8 +53,6 @@ public class MultiwayMergeSort {
            logger.info("Size of Streams : {} integers", sizeOfStreams);
            logger.info("Number of Streams : {}", numberOfStreams);
 
-           //If sizeOfStreams = 256
-           //First byte read is 4, then8 , 12 and so on
            final Queue<String> streamsQueue = new LinkedList<>();
            List<Integer> integers = new ArrayList<>(sizeOfStreams);
            int intsRead = 0;
@@ -59,7 +62,6 @@ public class MultiwayMergeSort {
                intsRead++;
                integers.add(value);
                if(intsRead % sizeOfStreams == 0) {
-                   System.out.println("length " + integers.size());
                    Collections.sort(integers); //Merge sort
                    try(final MemoryMappedWriteStream os = new MemoryMappedWriteStream(memory)) {
                        final String filePos = String.valueOf(filePosition);
@@ -81,7 +83,8 @@ public class MultiwayMergeSort {
            logger.info("Streams Queue References {}", streamsQueue);
            final MultiWayMerge multiWayMerge = new MultiWayMerge(streamsQueue, memory, d);
            multiWayMerge.merge();
-           multiWayMerge.removeTemporalFiles();
+           logger.error("Deleting temporary files");
+           multiWayMerge.removeTemporaryFiles();
        }
        catch (final Exception ex) {
            logger.error("", ex);
