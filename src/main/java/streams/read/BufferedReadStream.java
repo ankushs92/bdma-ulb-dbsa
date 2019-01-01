@@ -16,9 +16,11 @@ public class BufferedReadStream implements AbstractReadStream {
     }
 
     private DataInputStream ds;
+    private String fileLocation;
 
     @Override
     public void open(String fileLocation) throws FileNotFoundException {
+        this.fileLocation = fileLocation;
         final InputStream inputStream = new FileInputStream(new File(fileLocation));
         final BufferedInputStream bis = new BufferedInputStream(inputStream, bufferSize);
         ds = new DataInputStream(bis);
@@ -52,7 +54,7 @@ public class BufferedReadStream implements AbstractReadStream {
 
     @Override
     public String getFileLocation() {
-        return null;
+        return fileLocation;
     }
 
     @Override

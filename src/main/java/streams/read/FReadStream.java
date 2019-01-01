@@ -11,10 +11,12 @@ public class FReadStream implements AbstractReadStream {
 
     private static final Logger logger = LoggerFactory.getLogger(FileGenerator.class);
     private DataInputStream ds;
+    private String fileLocation;
 
     @Override
-    public void open(String fileLocation) throws FileNotFoundException {
+    public void open(final String fileLocation) throws FileNotFoundException {
         final InputStream inputStream = new FileInputStream(new File(fileLocation));
+        this.fileLocation = fileLocation;
         final BufferedInputStream bis = new BufferedInputStream(inputStream);
         ds = new DataInputStream(bis);
     }
@@ -47,7 +49,7 @@ public class FReadStream implements AbstractReadStream {
 
     @Override
     public String getFileLocation() {
-        return null;
+        return fileLocation;
     }
 
     @Override

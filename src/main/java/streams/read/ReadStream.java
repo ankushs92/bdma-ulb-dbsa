@@ -6,14 +6,19 @@ import streams.FileGenerator;
 import streams.interfaces.AbstractReadStream;
 
 import java.io.*;
+import java.util.stream.Collectors;
+
+import static java.lang.Runtime.getRuntime;
 
 public class ReadStream implements AbstractReadStream {
 
     private static final Logger logger = LoggerFactory.getLogger(FileGenerator.class);
     private DataInputStream ds;
+    private String fileLocation;
 
     @Override
     public void open(String fileLocation) throws FileNotFoundException {
+        this.fileLocation = fileLocation;
         final InputStream inputStream  = new FileInputStream(new File(fileLocation));
         ds = new DataInputStream(inputStream);
     }
@@ -45,7 +50,7 @@ public class ReadStream implements AbstractReadStream {
 
     @Override
     public String getFileLocation() {
-        return null;
+        return fileLocation;
     }
 
     @Override
@@ -53,5 +58,14 @@ public class ReadStream implements AbstractReadStream {
         if(endOfStream()) {
             ds.close();
         }
+    }
+
+
+
+    public static void main(String[] args) throws IOException {
+        Process process = getRuntime().exec("diskutil info /");
+        BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+        System.out.println(stdInput.lines().collect(Collectors.joining("\n")));
     }
 }

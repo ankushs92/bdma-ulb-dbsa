@@ -34,12 +34,12 @@ public class MemMapReadStream implements AbstractReadStream {
 
     @Override
     public void open(final String file) throws IOException {
-        fileLocation = file;
+        this.fileLocation = file;
         randomAccessFile = new RandomAccessFile(fileLocation, READ_MODE);
         fileChannel = randomAccessFile.getChannel();
         fileSize = fileChannel.size();
-        if(bufferSize>fileSize)
-            bufferSize = (int)fileSize;
+        if(bufferSize > fileSize)
+            bufferSize = (int) fileSize;
         mappedByteBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, bufferSize);
     }
 
@@ -61,8 +61,6 @@ public class MemMapReadStream implements AbstractReadStream {
 //            }
            // else {
                 try {
-//                    mappedByteBuffer.clear();
-                    //Do no request more than required. We are reading.
                     if(bufferSize > (fileSize - bytesRead)) {
                         bufferSize = (int) (fileSize - bytesRead);
                     }
@@ -84,7 +82,6 @@ public class MemMapReadStream implements AbstractReadStream {
         } catch (final IOException e) {
             logger.error("", e);
         }
-
     }
 
     @Override

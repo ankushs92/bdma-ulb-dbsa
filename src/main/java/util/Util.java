@@ -2,10 +2,10 @@ package util;
 
 import com.opencsv.CSVWriter;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Util {
 
@@ -15,4 +15,17 @@ public class Util {
         writer.close();
     }
 
+    public static int getOsBlockSize() throws IOException {
+        final Process process = Runtime.getRuntime().exec("diskutil info /");
+        final String result = new BufferedReader(new InputStreamReader(process.getInputStream()))
+                .lines()
+                .filter(line -> line.contains("Device Block Size")).collect(Collectors.toList()).get(0);
+        final String bytes = result.split(":")[1].trim().replace("Bytes","").trim();
+
+        return Integer.valueOf(bytes);
+    }
+
+    public static void main(String[] args) throws IOException {
+        System.out.println(getOsBlockSize());
+    }
 }
