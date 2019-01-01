@@ -117,10 +117,10 @@ public class FileGenerator {
 //        16:15:59.760 [main] INFO  streams.FileGenerator - Time for writing is 314 ms
 //        16:16:01.469 [main] INFO  streams.FileGenerator - Time reading is 1682 ms
 
-        String fileLocation1 = "./src/main/resources/benchmark/16mb_4000000_integers.data";
-        int numberOfIntegers = 4*1000000;
-        int bufferSize = 256;
-//        new File(fileLocation1).delete();
+        String fileLocation1 = "./src/main/resources/benchmark/4mb_1000000_integers.data";
+        int numberOfIntegers = 1*1000000;
+        int bufferSize = 524288;
+        new File(fileLocation1).delete();
 //        generateFile(fileLocation1, numberOfIntegers, 1, 0);
 //        readFile(fileLocation1, 1, 0);
 //        System.out.println("______________");
