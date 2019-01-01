@@ -6,6 +6,9 @@ import streams.FileGenerator;
 import streams.interfaces.AbstractReadStream;
 
 import java.io.*;
+import java.util.stream.Collectors;
+
+import static java.lang.Runtime.getRuntime;
 
 public class ReadStream implements AbstractReadStream {
 
@@ -55,5 +58,14 @@ public class ReadStream implements AbstractReadStream {
         if(endOfStream()) {
             ds.close();
         }
+    }
+
+
+
+    public static void main(String[] args) throws IOException {
+        Process process = getRuntime().exec("diskutil info /");
+        BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+        System.out.println(stdInput.lines().collect(Collectors.joining("\n")));
     }
 }

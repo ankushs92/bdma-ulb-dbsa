@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class MergeSortBenchmark {
 
@@ -26,7 +27,7 @@ public class MergeSortBenchmark {
         this.d = d;
     }
 
-    public long getTimeTakenToExecuteMergeSort() throws FileNotFoundException {
+    public long getTimeTakenToExecuteMergeSort() throws IOException {
         final long start = System.currentTimeMillis();
         final MultiwayMergeSort multiwayMergeSort = new MultiwayMergeSort(inputFile, memory, d);
         multiwayMergeSort.sortAndMerge();
@@ -37,7 +38,7 @@ public class MergeSortBenchmark {
     }
 
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws IOException {
         File inputFile1 = new File("Some file 1");
         int d = 3;
         int memory = 1024;
