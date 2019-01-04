@@ -52,36 +52,30 @@ public class StreamsBenchmarkRunner {
         final int fileSize4mb = 4000000;
         final int fileSize32Mb = 32000000;
         final int fileSize128Mb = 128000000;
-        final int fileSize512Mb = 512000000;
 
-////        // Only testing 1mb and 4 mb with the first implementation
-//        saveCsvForRead1stImplementation(ONE_MB, index, fileSize1Mb, FileSize.ONE_MB);
-//        saveCsvForRead1stImplementation(FOUR_MB, index, fileSize4mb, FileSize.FOUR_MB);
-//        saveCsvForRead1stImplementation(THIRTY_TWO_MB, index, fileSize4mb, FileSize.FOUR_MB);
+
+//        // Only testing 1mb and 4 mb with the first implementation
+        saveCsvForRead1stImplementation(ONE_MB, index, fileSize1Mb, FileSize.ONE_MB);
+        saveCsvForRead1stImplementation(FOUR_MB, index, fileSize4mb, FileSize.FOUR_MB);
+        saveCsvForRead1stImplementation(THIRTY_TWO_MB, index, fileSize4mb, FileSize.FOUR_MB);
 
 //
-//        saveCsvForRead2ndImplementation(ONE_MB, index, fileSize1Mb, FileSize.ONE_MB);
-//        saveCsvForRead2ndImplementation(FOUR_MB, index, fileSize4mb, FileSize.FOUR_MB);
-//        saveCsvForRead2ndImplementation(THIRTY_TWO_MB, index, fileSize32Mb, FileSize.THIRTY_TWO_MB);
-//        saveCsvForRead2ndImplementation(ONE_TWENTY_EIGHT_MB, index, fileSize128Mb, FileSize.ONE_TWENTY_EIGHT_MB);
-////        saveCsvForRead2ndImplementation(FIVE_HUNDRED_TWELVE_MB_FILES, index, fileSize512Mb, FileSize.FIVE_HUNDRED_TWELVE_MB);
+        saveCsvForRead2ndImplementation(ONE_MB, index, fileSize1Mb, FileSize.ONE_MB);
+        saveCsvForRead2ndImplementation(FOUR_MB, index, fileSize4mb, FileSize.FOUR_MB);
+        saveCsvForRead2ndImplementation(THIRTY_TWO_MB, index, fileSize32Mb, FileSize.THIRTY_TWO_MB);
+        saveCsvForRead2ndImplementation(ONE_TWENTY_EIGHT_MB, index, fileSize128Mb, FileSize.ONE_TWENTY_EIGHT_MB);
 
-//        saveCsvForRead3rdImplementation(ONE_MB, index, fileSize1Mb, FileSize.ONE_MB);
-//        saveCsvForRead3rdImplementation(FOUR_MB, index, fileSize4mb, FileSize.FOUR_MB);
-//        saveCsvForRead3rdImplementation(THIRTY_TWO_MB, index, fileSize32Mb, FileSize.THIRTY_TWO_MB);
+        saveCsvForRead3rdImplementation(ONE_MB, index, fileSize1Mb, FileSize.ONE_MB);
+        saveCsvForRead3rdImplementation(FOUR_MB, index, fileSize4mb, FileSize.FOUR_MB);
+        saveCsvForRead3rdImplementation(THIRTY_TWO_MB, index, fileSize32Mb, FileSize.THIRTY_TWO_MB);
         saveCsvForRead3rdImplementation(ONE_TWENTY_EIGHT_MB, index, fileSize128Mb, FileSize.ONE_TWENTY_EIGHT_MB);
-//        saveCsvForRead3rdImplementation(FIVE_HUNDRED_TWELVE_MB_FILES, index, fileSize512Mb, FileSize.FIVE_HUNDRED_TWELVE_MB);
-////
-//        saveCsvForRead4thImplementation(ONE_MB, index, fileSize1Mb, FileSize.ONE_MB);
-//        saveCsvForRead4thImplementation(FOUR_MB, index, fileSize4mb, FileSize.FOUR_MB);
-//        saveCsvForRead4thImplementation(THIRTY_TWO_MB, index, fileSize32Mb, FileSize.THIRTY_TWO_MB);
-//        saveCsvForRead4thImplementation(ONE_TWENTY_EIGHT_MB, index, fileSize128Mb, FileSize.ONE_TWENTY_EIGHT_MB);
-//        saveCsvForRead4thImplementation(FIVE_HUNDRED_TWELVE_MB_FILES, index, fileSize512Mb, FileSize.FIVE_HUNDRED_TWELVE_MB);
+
+        saveCsvForRead4thImplementation(ONE_MB, index, fileSize1Mb, FileSize.ONE_MB);
+        saveCsvForRead4thImplementation(FOUR_MB, index, fileSize4mb, FileSize.FOUR_MB);
+        saveCsvForRead4thImplementation(THIRTY_TWO_MB, index, fileSize32Mb, FileSize.THIRTY_TWO_MB);
+        saveCsvForRead4thImplementation(ONE_TWENTY_EIGHT_MB, index, fileSize128Mb, FileSize.ONE_TWENTY_EIGHT_MB);
 
 
-        //Write
-//        saveCsvForWrite1stImplementation(index, fileSize1Mb, FileSize.ONE_MB);
-//        deleteAllOutputFiles();
     }
 
     @SuppressWarnings({"Duplicates"})
