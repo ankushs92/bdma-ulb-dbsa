@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class MergeSortBenchmark {
@@ -37,19 +36,4 @@ public class MergeSortBenchmark {
         return timeTaken;
     }
 
-
-    public static void main(String[] args) throws IOException {
-        File inputFile1 = new File("Some file 1");
-        int d = 3;
-        int memory = 1024;
-        MergeSortBenchmark firstBenchmark = new MergeSortBenchmark(inputFile1, memory, d);
-        System.out.println("First benchmark " + firstBenchmark.getTimeTakenToExecuteMergeSort());
-
-        File inputFile2 = new File("");
-//        int d = 5;
-
-
-
-
-    }
 }

@@ -12,16 +12,18 @@ public class FWriteStream implements AbstractWriteStream {
 
     private static final Logger logger = LoggerFactory.getLogger(FileGenerator.class);
     private DataOutputStream ds;
+    private OutputStream outputStream;
+    private BufferedOutputStream bis;
 
     @Override
     public void create(final String fileLocation) {
         try {
             if(ds != null) {
                 logger.debug("Closing stream before opening new location.");
-                this.close();
+                close();
             }
-            final OutputStream outFile = new FileOutputStream( new File(fileLocation));
-            final BufferedOutputStream bis = new BufferedOutputStream( outFile );
+            outputStream = new FileOutputStream( new File(fileLocation));
+            bis = new BufferedOutputStream(outputStream);
             ds = new DataOutputStream(bis);
 
         } catch (final FileNotFoundException e) {
@@ -34,13 +36,20 @@ public class FWriteStream implements AbstractWriteStream {
     public void write(final Integer value) {
         try {
             ds.writeInt(value);
-        } catch (final IOException e) {
+        }
+        catch (final IOException e) {
             logger.error("Problem writing Integer to output stream : ", e);
         }
     }
 
     @Override
     public void close() {
+        try {
+            outputStream.close();
+            bis.close();
+        } catch (final IOException e) {
+            logger.error("", e);
+        }
         WriteUtil.closeAndFlush(ds);
     }
 

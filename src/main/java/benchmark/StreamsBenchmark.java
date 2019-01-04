@@ -17,10 +17,7 @@ import util.NumberUtil;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 
 public class StreamsBenchmark {
@@ -38,13 +35,21 @@ public class StreamsBenchmark {
             final int outputFileSize,
             final int k,
             final int bufferSize
-    )
+    ) throws IOException
     {
         this.inputFiles = inputFiles;
         this.outputFiles = outputFiles;
         this.outputFileSize = outputFileSize;
         this.k = k;
         this.bufferSize = bufferSize;
+
+        if(Objects.nonNull(outputFiles) && !outputFiles.isEmpty()) {
+            for(final File outputFile : outputFiles) {
+                if(!outputFile.exists()) {
+                    outputFile.createNewFile();
+                }
+            }
+        }
     }
 
     // ----- 1st Implementation
@@ -61,7 +66,7 @@ public class StreamsBenchmark {
         return timeTaken;
     }
 
-    public long getTimeTakenToExecuteKWriteStreams() throws FileNotFoundException {
+    public long getTimeTakenToExecuteKWriteStreams() {
         final Queue<AbstractWriteStream> writeStreamsQueue = new LinkedList<>();
         for(int i = 0; i < k; i++) {
             final WriteStream writeStream = new WriteStream();
@@ -88,7 +93,7 @@ public class StreamsBenchmark {
         return timeTaken;
     }
 
-    public long getTimeTakenToExecuteKWritetreams() throws FileNotFoundException {
+    public long getTimeTakenToExecuteKFWriteStreams() {
         final Queue<AbstractWriteStream> fWriteStreamsQueue = new LinkedList<>();
         for(int i = 0; i < k; i++) {
             final FWriteStream fWriteStream = new FWriteStream();
@@ -142,7 +147,7 @@ public class StreamsBenchmark {
         return timeTaken;
     }
 
-    public long getTimeTakenToExecuteKMemMappedByteWriteStreams() throws IOException {
+    public long getTimeTakenToExecuteKMemMappedByteWriteStreams()  {
         final Queue<AbstractWriteStream> memMappedReadStreamsQueue = new LinkedList<>();
         for(int i = 0; i < k; i++) {
             final MemoryMappedWriteStream writeStream = new MemoryMappedWriteStream(bufferSize);
@@ -156,7 +161,7 @@ public class StreamsBenchmark {
     }
 
 
-    private long getTimeTakenForReadStreams(final Queue<AbstractReadStream> readStreams) throws FileNotFoundException {
+    private long getTimeTakenForReadStreams(final Queue<AbstractReadStream> readStreams) {
         final long start = System.currentTimeMillis();
         while(!readStreams.isEmpty()) {
             final AbstractReadStream readStream = readStreams.remove();
@@ -170,14 +175,13 @@ public class StreamsBenchmark {
         return stop - start;
     }
 
-
-    private long getTimeTakenForWriteStreams(final Queue<AbstractWriteStream> writeStreams) throws FileNotFoundException {
+    private long getTimeTakenForWriteStreams(final Queue<AbstractWriteStream> writeStreams) {
         final long start = System.currentTimeMillis();
         int pos = 1;
         while(!writeStreams.isEmpty()) {
             final AbstractWriteStream writeStream = writeStreams.remove();
-            if(pos  <= outputFileSize * k) {
-                writeStream.write( NumberUtil.randomInt());
+            if(pos <= outputFileSize * k) {
+                writeStream.write(NumberUtil.randomInt());
                 pos++;
                 writeStreams.add(writeStream);
             }

@@ -8,7 +8,6 @@ import util.Assert;
 import util.Util;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
@@ -34,6 +33,7 @@ public class MultiwayMergeSort {
 
         this.file = file;
         this.memory = memory;
+//        Integer.MAX_VALUE
         this.d = d;
     }
 
@@ -57,7 +57,7 @@ public class MultiwayMergeSort {
            final int fileSize = fileSizeInBytes / 4;
 
            final int numberOfStreams  = (int) Math.ceil((double) fileSize / (double) memory);
-           final int sizeOfStreams  = fileSize / numberOfStreams;
+           final int sizeOfStreams  = fileSize / numberOfStreams; // Actually it's just M
 
            logger.info("File size in bytes {}", fileSizeInBytes);
            logger.info("File Size is {} integers", fileSize);
@@ -104,18 +104,18 @@ public class MultiwayMergeSort {
     }
 
     public static void main(String[] args) throws IOException {
-        final File file = new File("./src/main/resources/benchmark/implementation_1_2/1Mb/1mb_262144_integers_1");
-        long start = System.currentTimeMillis();
-        final MultiwayMergeSort m = new MultiwayMergeSort(file,8200, 3);
-
-        m.sortAndMerge();
-        long stop = System.currentTimeMillis();
-        System.out.println(stop - start);
-
-        //When m = 8192,  time = 11639, 9146, 9829
-        //when m = 8200, time = 11397, 9451, 10095
-
-
+//        final File file = new File("./src/main/resources/benchmark/implementation_1_2/1Mb/1mb_262144_integers_1");
+//        long start = System.currentTimeMillis();
+//        final MultiwayMergeSort m = new MultiwayMergeSort(file,8200, 3);
+//
+//        m.sortAndMerge();
+//        long stop = System.currentTimeMillis();
+//        System.out.println(stop - start);
+//
+//        //When m = 8192,  time = 11639, 9146, 9829
+//        //when m = 8200, time = 11397, 9451, 10095
+//
+//
 //        MemMapReadStream r = new MemMapReadStream(10000);
 //       r.open("./src/main/resources/sorted/22_23_24_25_26_27_28_29_30_31_32_1_2_3_4_5_6_7_8_9_10_11_12_13_14_15_16_17_18_19_20_21.data");
 //        List<Integer> ints = new ArrayList<>();
@@ -134,6 +134,6 @@ public class MultiwayMergeSort {
 //            }
 //        }
 //        System.out.println(ints);
-
+            byte[] arr = new byte[Integer.MAX_VALUE - 2^5];
     }
 }
