@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import streams.read.MemMapReadStream;
 import streams.write.MemoryMappedWriteStream;
 import util.Assert;
-import util.Util;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,27 +28,20 @@ public class MultiwayMergeSort {
     {
         Assert.notNull(file, "file cannot be null");
         Assert.isTrue(memory > 0, "memory has to be greater than 0");
-        Assert.notNull(d > 0, "d hs to be greater than 0");
+        Assert.notNull(d > 1, "d has to be greater than 1");
 
         this.file = file;
         this.memory = memory;
-//        Integer.MAX_VALUE
         this.d = d;
     }
 
     public void sortAndMerge() throws IOException {
        // We allocate buffer size equal to the size of the block on disk
-       final int bufferSize = Util.getOsBlockSize();
-       final int memoryInBytes = memory * 4;
-       final int numberOfBuffers = (int) Math.ceil((double) memoryInBytes / (double) bufferSize);
-       final int inputBufferSize = (numberOfBuffers - 1) * bufferSize;
-       final int outputBufferSize = memoryInBytes - inputBufferSize;
+       final int inputBufferSize = memory * 4;
+       final int outputBufferSize = memory * 4;
 
-       logger.info("Memory allocated M : {} Bytes", memoryInBytes);
-       logger.info("OS Block Size {}", bufferSize);
-       logger.info("Number of total buffers {}", numberOfBuffers);
-       logger.info("Input Buffer Size = M -1 buffers = {}", inputBufferSize);
-       logger.info("Output Buffer Size = {} ", outputBufferSize);
+       logger.info("Input Buffer Size = {} integers", inputBufferSize);
+       logger.info("Output Buffer Size = {} integers ", outputBufferSize);
 
        try(final MemMapReadStream is = new MemMapReadStream(inputBufferSize)) {
            is.open(file.getPath());
@@ -104,6 +96,10 @@ public class MultiwayMergeSort {
     }
 
     public static void main(String[] args) throws IOException {
+        File fourMb = new File("/Users/ankushsharma/Desktop/code/dbsa/src/main/resources/benchmark/4mb_integers.data");
+        final int memory = 4000000;
+        MultiwayMergeSort m = new MultiwayMergeSort(fourMb, memory, 1);
+        m.sortAndMerge();
 //        final File file = new File("./src/main/resources/benchmark/implementation_1_2/1Mb/1mb_262144_integers_1");
 //        long start = System.currentTimeMillis();
 //        final MultiwayMergeSort m = new MultiwayMergeSort(file,8200, 3);

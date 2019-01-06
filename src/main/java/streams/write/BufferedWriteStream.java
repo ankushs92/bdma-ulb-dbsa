@@ -49,12 +49,12 @@ public class BufferedWriteStream implements AbstractWriteStream {
     @Override
     public void close()  {
         try {
+            WriteUtil.closeAndFlush(ds);
             outputStream.close();
             bis.close();
         } catch (final IOException e) {
             logger.error("", e);
         }
-        WriteUtil.closeAndFlush(ds);
 
     }
 }

@@ -13,7 +13,7 @@ import static java.lang.String.valueOf;
 
 public class StreamsBenchmarkRunner {
 
-    private static final File WRITE_OUTPUT_CSV = new File("./src/main/resources/benchmark/csv/writeBenchmark.csv/");
+    private static final File WRITE_OUTPUT_CSV = new File("./src/main/resources/benchmark/csv/writeBenchmark_NEW.csv/");
     private static final File OUTPUT_CSV = new File("./src/main/resources/benchmark/csv/streamsBenchmark_NEW.csv/");
     private static final int MAX_K = 30;
     private static final List<Integer> Ks = Arrays.asList(1, 10, 20, 30);
@@ -46,36 +46,64 @@ public class StreamsBenchmarkRunner {
 
     public static void main(final String[] args) throws IOException {
         int index = 0;
-        final String[] headers = new String[]{"index", "t", "n", "numInt", "k", "bufferSize", "t1", "t2", "t3"};
+//        final String[] headers = new String[]{"index", "t", "n", "numInt", "k", "bufferSize", "t1", "t2", "t3"};
+////        BufferedWriteStream b = new BufferedWriteStream(1);
+////        b.create("/Users/ankushsharma/Desktop/code/dbsa/src/main/resources/test");
+//
+//        FWriteStream fWriteStream = new FWriteStream();
+//        fWriteStream.create("/Users/ankushsharma/Desktop/code/dbsa/src/main/resources/test");
+//
+//        for(int i = 0 ;i < 2045; i ++) {
+//            fWriteStream.write(i);
+//        }
+//        fWriteStream.close();
 //        Util.write(OUTPUT_CSV, singletonList(headers));
         final int fileSize1Mb = 1000000;
         final int fileSize4mb = 4000000;
         final int fileSize32Mb = 32000000;
         final int fileSize128Mb = 128000000;
 
+//        saveCsvForRead1stImplementation(ONE_MB, index, fileSize1Mb, FileSize.ONE_MB);
+//        saveCsvForRead1stImplementation(FOUR_MB, index, fileSize4mb, FileSize.FOUR_MB);
+//        saveCsvForRead1stImplementation(THIRTY_TWO_MB, index, fileSize4mb, FileSize.THIRTY_TWO_MB);
 
-//        // Only testing 1mb and 4 mb with the first implementation
-        saveCsvForRead1stImplementation(ONE_MB, index, fileSize1Mb, FileSize.ONE_MB);
-        saveCsvForRead1stImplementation(FOUR_MB, index, fileSize4mb, FileSize.FOUR_MB);
-        saveCsvForRead1stImplementation(THIRTY_TWO_MB, index, fileSize4mb, FileSize.FOUR_MB);
 
+//        saveCsvForRead2ndImplementation(ONE_MB, index, fileSize1Mb, FileSize.ONE_MB);
+//        saveCsvForRead2ndImplementation(FOUR_MB, index, fileSize4mb, FileSize.FOUR_MB);
+//        saveCsvForRead2ndImplementation(THIRTY_TWO_MB, index, fileSize32Mb, FileSize.THIRTY_TWO_MB);
+//        saveCsvForRead2ndImplementation(ONE_TWENTY_EIGHT_MB, index, fileSize128Mb, FileSize.ONE_TWENTY_EIGHT_MB);
 //
-        saveCsvForRead2ndImplementation(ONE_MB, index, fileSize1Mb, FileSize.ONE_MB);
-        saveCsvForRead2ndImplementation(FOUR_MB, index, fileSize4mb, FileSize.FOUR_MB);
-        saveCsvForRead2ndImplementation(THIRTY_TWO_MB, index, fileSize32Mb, FileSize.THIRTY_TWO_MB);
-        saveCsvForRead2ndImplementation(ONE_TWENTY_EIGHT_MB, index, fileSize128Mb, FileSize.ONE_TWENTY_EIGHT_MB);
+//        saveCsvForRead3rdImplementation(ONE_MB, index, fileSize1Mb, FileSize.ONE_MB);
+//        saveCsvForRead3rdImplementation(FOUR_MB, index, fileSize4mb, FileSize.FOUR_MB);
+//        saveCsvForRead3rdImplementation(THIRTY_TWO_MB, index, fileSize32Mb, FileSize.THIRTY_TWO_MB);
+//        saveCsvForRead3rdImplementation(ONE_TWENTY_EIGHT_MB, index, fileSize128Mb, FileSize.ONE_TWENTY_EIGHT_MB);
+//
+//        saveCsvForRead4thImplementation(ONE_MB, index, fileSize1Mb, FileSize.ONE_MB);
+//        saveCsvForRead4thImplementation(FOUR_MB, index, fileSize4mb, FileSize.FOUR_MB);
+//        saveCsvForRead4thImplementation(THIRTY_TWO_MB, index, fileSize32Mb, FileSize.THIRTY_TWO_MB);
+//        saveCsvForRead4thImplementation(ONE_TWENTY_EIGHT_MB, index, fileSize128Mb, FileSize.ONE_TWENTY_EIGHT_MB);
+//        saveCsvForRead4thImplementation(FI, index, fileSize128Mb, FileSize.ONE_TWENTY_EIGHT_MB);
 
-        saveCsvForRead3rdImplementation(ONE_MB, index, fileSize1Mb, FileSize.ONE_MB);
-        saveCsvForRead3rdImplementation(FOUR_MB, index, fileSize4mb, FileSize.FOUR_MB);
-        saveCsvForRead3rdImplementation(THIRTY_TWO_MB, index, fileSize32Mb, FileSize.THIRTY_TWO_MB);
-        saveCsvForRead3rdImplementation(ONE_TWENTY_EIGHT_MB, index, fileSize128Mb, FileSize.ONE_TWENTY_EIGHT_MB);
+        saveCsvForWrite1stImplementation(index, fileSize1Mb, FileSize.ONE_MB);
+        saveCsvForWrite1stImplementation(index, fileSize4mb, FileSize.FOUR_MB);
+        saveCsvForWrite1stImplementation(index, fileSize32Mb, FileSize.THIRTY_TWO_MB);
+//
+//        saveCsvForWrite2ndImplementation(index, fileSize1Mb, FileSize.ONE_MB);
+//        saveCsvForWrite2ndImplementation(index, fileSize4mb, FileSize.FOUR_MB);
+//        saveCsvForWrite2ndImplementation(index, fileSize32Mb, FileSize.THIRTY_TWO_MB);
+//        saveCsvForWrite2ndImplementation(index, fileSize128Mb, FileSize.ONE_TWENTY_EIGHT_MB);
+//
 
-        saveCsvForRead4thImplementation(ONE_MB, index, fileSize1Mb, FileSize.ONE_MB);
-        saveCsvForRead4thImplementation(FOUR_MB, index, fileSize4mb, FileSize.FOUR_MB);
-        saveCsvForRead4thImplementation(THIRTY_TWO_MB, index, fileSize32Mb, FileSize.THIRTY_TWO_MB);
-        saveCsvForRead4thImplementation(ONE_TWENTY_EIGHT_MB, index, fileSize128Mb, FileSize.ONE_TWENTY_EIGHT_MB);
-
-
+//        saveCsvForWrite4thImplementation(index, fileSize1Mb, FileSize.ONE_MB);
+//        saveCsvForWrite4thImplementation(index, fileSize4mb, FileSize.FOUR_MB);
+//        saveCsvForWrite4thImplementation(index, fileSize32Mb, FileSize.THIRTY_TWO_MB);
+//        saveCsvForWrite4thImplementation(index, fileSize128Mb, FileSize.ONE_TWENTY_EIGHT_MB);
+////
+//        saveCsvForWrite3rdImplementation(index, fileSize1Mb, FileSize.ONE_MB);
+//        saveCsvForWrite3rdImplementation(index, fileSize4mb, FileSize.FOUR_MB);
+//        saveCsvForWrite3rdImplementation(index, fileSize32Mb, FileSize.THIRTY_TWO_MB);
+//        saveCsvForWrite3rdImplementation(index, fileSize128Mb, FileSize.ONE_TWENTY_EIGHT_MB);
+//
     }
 
     @SuppressWarnings({"Duplicates"})
@@ -209,11 +237,11 @@ public class StreamsBenchmarkRunner {
         final String fileSizeStr = valueOf(fileSize);
         final List<String[]> records = new ArrayList<>();
         final String fileSizeTypeStr = getReadableSizeString(fileSizeType);
-        for(final int k : Ks) {
+        for(final int k : Ks.subList(0, 4)) {
             String kString = valueOf(k);
             for(final int bufferSize : BUFFER_SIZES) {
                 String[] record = new String[]{valueOf(index), "4", fileSizeTypeStr, fileSizeStr, kString, valueOf(bufferSize), null, null, null};
-                for(int i = 0; i < 3; i++) {
+                for(int i = 0; i < 1; i++) {
                     final List<File> files = createKFiles(file, k);
                     index++;
                     final StreamsBenchmark firstImplReadBenchmark = new StreamsBenchmark(files, null, 0, k, bufferSize);
@@ -245,48 +273,95 @@ public class StreamsBenchmarkRunner {
     )
     throws IOException
     {
-        final String fileSizeStr = valueOf(fileSize);
         final String fileSizeTypeStr = getReadableSizeString(fileSizeType);
         final List<String[]> records = new ArrayList<>();
-        final List<File> outputFiles = new ArrayList<>();
-        for(final int k : Ks.subList(0, 2)) {
-            for(int i = 0 ; i < k; i++) {
-                final File outputFile = new File(OUTPUT_FILE_DIRECTORY_PATH + "/OneMb_" + valueOf(i) + "_" + valueOf(k));
-                outputFiles.add(outputFile);
-            }
-        }
-        for(final int k : Ks.subList(0, 2)) {
+        for(final int k : Ks) {
             String kString = valueOf(k);
-            String[] record = new String[]{valueOf(index), "1", fileSizeTypeStr, fileSizeStr, kString, "1", null, null, null};
-            for(int i = 0; i < 3; i++) {
-                index++;
-                final StreamsBenchmark firstImplWriteBenchmark = new StreamsBenchmark(null, outputFiles, fileSize, k, 0);
-                final long timeTaken = firstImplWriteBenchmark.getTimeTakenToExecuteKWriteStreams();
-                record[0] = valueOf(index);
-                if(i == 0) {
-                    record[6] = valueOf(timeTaken);
-                }
-                if(i == 1) {
-                    record[7] = valueOf(timeTaken);
-                }
-                if(i == 2) {
-                    record[8] = valueOf(timeTaken);
-                }
-            }
+            final List<File> outputFiles = createKEmptyFiles(k);
+            index++;
+            final StreamsBenchmark firstImplWriteBenchmark = new StreamsBenchmark(null, outputFiles, fileSize, k, 0);
+            final long timeTaken = firstImplWriteBenchmark.getTimeTakenToExecuteKWriteStreams();
+            String[] record = new String[]{valueOf(index), "wStreamA", fileSizeTypeStr, kString, "1", String.valueOf(timeTaken)};
             records.add(record);
+            deleteTemporaryFiles(outputFiles);
         }
         Util.write(WRITE_OUTPUT_CSV, records);
 
     }
 
-
-    private enum FileSize {
-        ONE_MB,
-        FOUR_MB,
-        THIRTY_TWO_MB,
-        ONE_TWENTY_EIGHT_MB,
-        FIVE_HUNDRED_TWELVE_MB
+    @SuppressWarnings({"Duplicates"})
+    private static void saveCsvForWrite2ndImplementation(
+            int index,
+            final int fileSize,
+            final FileSize fileSizeType
+    )
+            throws IOException
+    {
+        final String fileSizeTypeStr = getReadableSizeString(fileSizeType);
+        final List<String[]> records = new ArrayList<>();
+        for(final int k : Ks) {
+            String kString = valueOf(k);
+            final List<File> outputFiles = createKEmptyFiles(k);
+            index++;
+            final StreamsBenchmark firstImplWriteBenchmark = new StreamsBenchmark(null, outputFiles, fileSize, k, 8192);
+            final long timeTaken = firstImplWriteBenchmark.getTimeTakenToExecuteKFWriteStreams();
+            String[] record = new String[]{valueOf(index), "wStreamB", fileSizeTypeStr, kString, "8192", String.valueOf(timeTaken)};
+            records.add(record);
+            deleteTemporaryFiles(outputFiles);
+        }
+        Util.write(WRITE_OUTPUT_CSV, records);
     }
+
+    @SuppressWarnings({"Duplicates"})
+    private static void saveCsvForWrite3rdImplementation(
+            int index,
+            final int fileSize,
+            final FileSize fileSizeType
+    )
+    throws IOException
+    {
+        final String fileSizeTypeStr = getReadableSizeString(fileSizeType);
+        final List<String[]> records = new ArrayList<>();
+        for(final int k : Ks) {
+            String kString = valueOf(k);
+            index++;
+            for(final int bufferSize : BUFFER_SIZES) {
+                final List<File> outputFiles = createKEmptyFiles(k);
+                final StreamsBenchmark firstImplWriteBenchmark = new StreamsBenchmark(null, outputFiles, fileSize, k, bufferSize);
+                final long timeTaken = firstImplWriteBenchmark.getTimeTakenToExecuteKBufferedWriteStreams();
+                String[] record = new String[]{valueOf(index), "wStreamC", fileSizeTypeStr, kString, valueOf(bufferSize), String.valueOf(timeTaken)};
+                records.add(record);
+                deleteTemporaryFiles(outputFiles);
+            }
+        }
+        Util.write(WRITE_OUTPUT_CSV, records);
+    }
+
+    @SuppressWarnings({"Duplicates"})
+    private static void saveCsvForWrite4thImplementation(
+            int index,
+            final int fileSize,
+            final FileSize fileSizeType
+    )
+    throws IOException
+    {
+        final String fileSizeTypeStr = getReadableSizeString(fileSizeType);
+        final List<String[]> records = new ArrayList<>();
+        for(final int k : Ks) {
+            String kString = valueOf(k);
+            index++;
+            for(final int bufferSize : BUFFER_SIZES) {
+                final List<File> outputFiles = createKEmptyFiles(k);
+                final StreamsBenchmark firstImplWriteBenchmark = new StreamsBenchmark(null, outputFiles, fileSize, k, bufferSize);
+                final long timeTaken = firstImplWriteBenchmark.getTimeTakenToExecuteKMemMappedByteWriteStreams();
+                String[] record = new String[]{valueOf(index), "wStreamD", fileSizeTypeStr, kString, valueOf(bufferSize), String.valueOf(timeTaken)};
+                records.add(record);
+                deleteTemporaryFiles(outputFiles);
+            }
+        }
+        Util.write(WRITE_OUTPUT_CSV, records);
+    }
+
     private static String getReadableSizeString(final FileSize fileSizeType) {
         String result = "";
         switch (fileSizeType) {
@@ -299,7 +374,17 @@ public class StreamsBenchmarkRunner {
         return result;
     }
 
-
+    private static List<File> createKEmptyFiles(final int k) throws IOException {
+        final List<File> files = new ArrayList<>();
+        for(int i = 0 ; i < k ; i++) {
+            final File copy = new File(FILE_DIRECTORY.getPath() + "_" + valueOf(i));
+            if(!copy.exists()) {
+                copy.createNewFile();
+            }
+            files.add(copy);
+        }
+        return files;
+    }
     private static List<File> createKFiles(final File file, final int k) throws IOException {
         final List<File> files = new ArrayList<>();
         for(int i = 0 ; i < k ; i++) {
@@ -316,7 +401,6 @@ public class StreamsBenchmarkRunner {
     private static void deleteTemporaryFiles(final List<File> files) {
         files.forEach(File :: delete);
     }
-
 
 
 }

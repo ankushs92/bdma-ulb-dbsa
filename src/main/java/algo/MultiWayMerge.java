@@ -44,7 +44,7 @@ public class MultiWayMerge {
             final int bufferSize = (int) Math.ceil((double) memory / d );
             for (int i = 0; i < d && i <= streamsLocations.size(); i++) {
                 final MemMapReadStream readStream = new MemMapReadStream(bufferSize);
-                StreamsPriorityQueue streamManager = new StreamsPriorityQueue(0, readStream);
+                final StreamsPriorityQueue streamManager = new StreamsPriorityQueue(0, readStream);
                 try {
                     final String fileKey = streamsLocations.remove();
                     streamManager.getStream().open(SORTED_DIR + fileKey + SORTED_EXT);
@@ -71,7 +71,7 @@ public class MultiWayMerge {
 
     public void mergeSort(Queue<StreamsPriorityQueue> kStreams, final String fileName) {
         //Create the ouput stream. We consider size 1 for output
-        final MemoryMappedWriteStream writeStream = new MemoryMappedWriteStream(1);
+        final MemoryMappedWriteStream writeStream = new MemoryMappedWriteStream(memory);
         writeStream.create(fileName);
         while(!kStreams.isEmpty()) {
             final StreamsPriorityQueue streamMinValue = kStreams.remove();

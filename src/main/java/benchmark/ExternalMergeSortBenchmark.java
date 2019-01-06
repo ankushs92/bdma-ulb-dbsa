@@ -7,15 +7,15 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 
-public class MergeSortBenchmark {
+public class ExternalMergeSortBenchmark {
 
-    private static final Logger logger = LoggerFactory.getLogger(MergeSortBenchmark.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExternalMergeSortBenchmark.class);
 
     private final int d;
     private final File inputFile;
     private final int memory;
 
-    MergeSortBenchmark(
+    ExternalMergeSortBenchmark(
             final File inputFile,
             final int memory,
             final int d

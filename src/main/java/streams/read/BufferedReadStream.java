@@ -42,7 +42,8 @@ public class BufferedReadStream implements AbstractReadStream {
     public boolean endOfStream() {
         try {
             return ds.available() == 0;
-        } catch (final IOException e) {
+        }
+        catch (final IOException e) {
             logger.error("", e);
         }
         return false;

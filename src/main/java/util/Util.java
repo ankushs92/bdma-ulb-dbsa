@@ -26,7 +26,4 @@ public class Util {
         return Integer.valueOf(bytes);
     }
 
-    public static void main(String[] args) throws IOException {
-        System.out.println(getOsBlockSize());
-    }
 }

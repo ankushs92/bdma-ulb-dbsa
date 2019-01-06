@@ -17,7 +17,9 @@ import util.NumberUtil;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 
 public class StreamsBenchmark {
@@ -35,21 +37,14 @@ public class StreamsBenchmark {
             final int outputFileSize,
             final int k,
             final int bufferSize
-    ) throws IOException
+    )
     {
         this.inputFiles = inputFiles;
         this.outputFiles = outputFiles;
         this.outputFileSize = outputFileSize;
+
         this.k = k;
         this.bufferSize = bufferSize;
-
-        if(Objects.nonNull(outputFiles) && !outputFiles.isEmpty()) {
-            for(final File outputFile : outputFiles) {
-                if(!outputFile.exists()) {
-                    outputFile.createNewFile();
-                }
-            }
-        }
     }
 
     // ----- 1st Implementation
@@ -68,14 +63,16 @@ public class StreamsBenchmark {
 
     public long getTimeTakenToExecuteKWriteStreams() {
         final Queue<AbstractWriteStream> writeStreamsQueue = new LinkedList<>();
+        final Queue<AbstractWriteStream> copy = new LinkedList<>();
         for(int i = 0; i < k; i++) {
             final WriteStream writeStream = new WriteStream();
             final File inputFile = outputFiles.get(i);
             writeStream.create(inputFile.getPath());
             writeStreamsQueue.add(writeStream);
+            copy.add(writeStream);
         }
         final long timeTaken = getTimeTakenForWriteStreams(writeStreamsQueue);
-        closeWriteStreams(writeStreamsQueue);
+        closeWriteStreams(copy);
         return timeTaken;
     }
 
@@ -95,14 +92,16 @@ public class StreamsBenchmark {
 
     public long getTimeTakenToExecuteKFWriteStreams() {
         final Queue<AbstractWriteStream> fWriteStreamsQueue = new LinkedList<>();
+        final Queue<AbstractWriteStream> copy = new LinkedList<>();
         for(int i = 0; i < k; i++) {
             final FWriteStream fWriteStream = new FWriteStream();
             final File inputFile = outputFiles.get(i);
             fWriteStream.create(inputFile.getPath());
             fWriteStreamsQueue.add(fWriteStream);
+            copy.add(fWriteStream);
         }
         final long timeTaken = getTimeTakenForWriteStreams(fWriteStreamsQueue);
-        closeWriteStreams(fWriteStreamsQueue);
+        closeWriteStreams(copy);
         return timeTaken;
     }
 
@@ -122,14 +121,16 @@ public class StreamsBenchmark {
 
     public long getTimeTakenToExecuteKBufferedWriteStreams() throws FileNotFoundException {
         final Queue<AbstractWriteStream> bufferedWriteStreamsQueue = new LinkedList<>();
+        final Queue<AbstractWriteStream> copy = new LinkedList<>();
         for(int i = 0; i < k; i++) {
             final BufferedWriteStream bufferedWriteStream = new BufferedWriteStream(bufferSize);
             final File outputFile = outputFiles.get(i);
             bufferedWriteStream.create(outputFile.getPath());
             bufferedWriteStreamsQueue.add(bufferedWriteStream);
+            copy.add(bufferedWriteStream);
         }
         final long timeTaken = getTimeTakenForWriteStreams(bufferedWriteStreamsQueue);
-        closeWriteStreams(bufferedWriteStreamsQueue);
+        closeWriteStreams(copy);
         return timeTaken;
     }
 
@@ -149,14 +150,16 @@ public class StreamsBenchmark {
 
     public long getTimeTakenToExecuteKMemMappedByteWriteStreams()  {
         final Queue<AbstractWriteStream> memMappedReadStreamsQueue = new LinkedList<>();
+        final Queue<AbstractWriteStream> copy = new LinkedList<>();
         for(int i = 0; i < k; i++) {
             final MemoryMappedWriteStream writeStream = new MemoryMappedWriteStream(bufferSize);
             final File outputFile = outputFiles.get(i);
             writeStream.create(outputFile.getPath());
             memMappedReadStreamsQueue.add(writeStream);
+            copy.add(writeStream);
         }
         final long timeTaken = getTimeTakenForWriteStreams(memMappedReadStreamsQueue);
-        closeWriteStreams(memMappedReadStreamsQueue);
+        closeWriteStreams(copy);
         return timeTaken;
     }
 
@@ -177,10 +180,15 @@ public class StreamsBenchmark {
 
     private long getTimeTakenForWriteStreams(final Queue<AbstractWriteStream> writeStreams) {
         final long start = System.currentTimeMillis();
-        int pos = 1;
+        long pos = 0;
+        final long limit = (long) outputFileSize * (long) k / 4;
+
+//        3589000000
+//        3861225472
+        //640000000
         while(!writeStreams.isEmpty()) {
             final AbstractWriteStream writeStream = writeStreams.remove();
-            if(pos <= outputFileSize * k) {
+            if(pos <= limit) {
                 writeStream.write(NumberUtil.randomInt());
                 pos++;
                 writeStreams.add(writeStream);
@@ -188,6 +196,7 @@ public class StreamsBenchmark {
         }
         final long stop = System.currentTimeMillis();
         logger.info("Time taken to Execute getTimeTakenToExecuteKReadStreams is {}", stop - start);
+
         return stop - start;
     }
 
@@ -214,24 +223,29 @@ public class StreamsBenchmark {
     }
 
     public static void main(String[] args) throws IOException {
-        int bufferSize = 1073741;
-        File inputFile = new File("/Users/ankushsharma/Desktop/code/dbsa/src/main/resources/benchmark/implementation_1_2/4196_bytes_1024_integers");
-        int k = 3;
-        List<File> inputFiles = new ArrayList<>();
-        for(int i =0; i < k; i++) {
-            inputFiles.add(inputFile);
-        }
-        System.out.println(inputFiles);
+        int x = 128000000;
+        int k = 20;
+        long limit = (long) x * (long) k / 4;
+        System.out.println(limit);
 
-        StreamsBenchmark readImpl1 = new StreamsBenchmark(inputFiles, null, 0, k, 0);
-//        StreamsBenchmark readImpl2 = new StreamsBenchmark(inputFiles, null, 0, k, 0);
-//        StreamsBenchmark readImpl3 = new StreamsBenchmark(inputFiles, null, 0, k, bufferSize);
-//        StreamsBenchmark readImpl4 = new StreamsBenchmark(inputFiles, null, 0, k, bufferSize);
-
-        System.out.println(readImpl1.getTimeTakenToExecuteKReadStreams());
-//        System.out.println(readImpl2.getTimeTakenToExecuteKFReadStreams());
-//        System.out.println(readImpl3.getTimeTakenToExecuteKBufferedReadStreams());
-//        System.out.println(readImpl4.getTimeTakenToExecuteKMemMappedByteReadStreams());
+//        int bufferSize = 1073741;
+//        File inputFile = new File("/Users/ankushsharma/Desktop/code/dbsa/src/main/resources/benchmark/implementation_1_2/4196_bytes_1024_integers");
+//        int k = 3;
+//        List<File> inputFiles = new ArrayList<>();
+//        for(int i =0; i < k; i++) {
+//            inputFiles.add(inputFile);
+//        }
+//
+//
+//        StreamsBenchmark readImpl1 = new StreamsBenchmark(inputFiles, null, 0, k, 0);
+////        StreamsBenchmark readImpl2 = new StreamsBenchmark(inputFiles, null, 0, k, 0);
+////        StreamsBenchmark readImpl3 = new StreamsBenchmark(inputFiles, null, 0, k, bufferSize);
+////        StreamsBenchmark readImpl4 = new StreamsBenchmark(inputFiles, null, 0, k, bufferSize);
+//
+//        System.out.println(readImpl1.getTimeTakenToExecuteKReadStreams());
+////        System.out.println(readImpl2.getTimeTakenToExecuteKFReadStreams());
+////        System.out.println(readImpl3.getTimeTakenToExecuteKBufferedReadStreams());
+////        System.out.println(readImpl4.getTimeTakenToExecuteKMemMappedByteReadStreams());
 
     }
 

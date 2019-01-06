@@ -1,7 +1,5 @@
 package streams.interfaces;
 
-import java.io.IOException;
-
 public interface AbstractWriteStream extends AutoCloseable {
 
     void create(String fileLocation);
