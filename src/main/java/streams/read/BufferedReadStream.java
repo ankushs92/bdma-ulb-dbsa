@@ -16,13 +16,14 @@ public class BufferedReadStream implements AbstractReadStream {
     }
 
     private DataInputStream ds;
+    private BufferedInputStream bis;
     private String fileLocation;
 
     @Override
     public void open(String fileLocation) throws FileNotFoundException {
         this.fileLocation = fileLocation;
         final InputStream inputStream = new FileInputStream(new File(fileLocation));
-        final BufferedInputStream bis = new BufferedInputStream(inputStream, bufferSize);
+        bis = new BufferedInputStream(inputStream, bufferSize);
         ds = new DataInputStream(bis);
     }
 
@@ -41,7 +42,8 @@ public class BufferedReadStream implements AbstractReadStream {
     public boolean endOfStream() {
         try {
             return ds.available() == 0;
-        } catch (final IOException e) {
+        }
+        catch (final IOException e) {
             logger.error("", e);
         }
         return false;
@@ -60,6 +62,7 @@ public class BufferedReadStream implements AbstractReadStream {
     @Override
     public void close() throws Exception {
         if(endOfStream()) {
+            bis.close();
             ds.close();
         }
     }

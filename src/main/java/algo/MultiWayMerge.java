@@ -18,22 +18,22 @@ public class MultiWayMerge {
 
     private static final Logger logger = LoggerFactory.getLogger(MultiWayMerge.class);
     private final Queue<String> streamsLocations;
-    private final int bufferSize;
+    private final int memory;
     private final int d;
     private final Queue<StreamsPriorityQueue> removeStreams;
 
     public MultiWayMerge(
             final Queue<String> streamsLocations,
-            final int bufferSize,
+            final int memory,
             final int d
     )
     {
         Assert.notNull(streamsLocations, "streamsLocations cannot be null");
-        Assert.isTrue(bufferSize > 0, "bufferSize has to be greater than 0");
+        Assert.isTrue(memory > 0, "memory has to be greater than 0");
         Assert.notNull(d > 0, "d has to be greater than 0");
 
         this.streamsLocations = streamsLocations;
-        this.bufferSize = bufferSize;
+        this.memory = memory;
         this.d = d;
         this.removeStreams = new PriorityQueue<>();
     }
@@ -43,9 +43,11 @@ public class MultiWayMerge {
         while(!streamsLocations.isEmpty() && streamsLocations.size() > 1) {
             Queue<StreamsPriorityQueue> streamsQueue = new PriorityQueue<>();
             String mergedFileKey = "p" + String.valueOf(pass);
+            final int bufferSize = (int) Math.ceil((double) memory / d );
+
             for (int i = 0; i < d && i <= streamsLocations.size(); i++) {
                 final MemMapReadStream readStream = new MemMapReadStream(bufferSize);
-                StreamsPriorityQueue streamManager = new StreamsPriorityQueue(0, readStream);
+                final StreamsPriorityQueue streamManager = new StreamsPriorityQueue(0, readStream);
                 try {
                     final String fileKey = streamsLocations.remove();
                     streamManager.getStream().open(SORTED_DIR + fileKey + SORTED_EXT);
@@ -77,7 +79,7 @@ public class MultiWayMerge {
 
     public void mergeSort(Queue<StreamsPriorityQueue> kStreams, final String fileName) {
         //Create the ouput stream. We consider size 1 for output
-        final MemoryMappedWriteStream writeStream = new MemoryMappedWriteStream(1);
+        final MemoryMappedWriteStream writeStream = new MemoryMappedWriteStream(memory);
         writeStream.create(fileName);
         while(!kStreams.isEmpty()) {
             final StreamsPriorityQueue streamMinValue = kStreams.remove();
@@ -103,4 +105,3 @@ public class MultiWayMerge {
         }
     }
 }
-

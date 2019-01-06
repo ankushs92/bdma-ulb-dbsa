@@ -6,5 +6,5 @@ public interface AbstractWriteStream extends AutoCloseable {
 
     void write(Integer value);
 
-    void close();
+    void close() ;
 }

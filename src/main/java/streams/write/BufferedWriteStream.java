@@ -14,6 +14,8 @@ public class BufferedWriteStream implements AbstractWriteStream {
     private DataOutputStream ds;
 
     private final int bufferSize;
+    private OutputStream outputStream;
+    private BufferedOutputStream bis;
 
     public BufferedWriteStream(final int bufferSize) {
         this.bufferSize = bufferSize;
@@ -26,8 +28,8 @@ public class BufferedWriteStream implements AbstractWriteStream {
                 logger.debug("Closing stream before opening new location.");
                 close();
             }
-            final OutputStream outFile = new FileOutputStream( new File(fileLocation));
-            final BufferedOutputStream bis = new BufferedOutputStream(outFile, bufferSize); // The only change is here
+            outputStream = new FileOutputStream( new File(fileLocation));
+            bis = new BufferedOutputStream(outputStream, bufferSize); // The only change is here
             ds = new DataOutputStream(bis);
         }
         catch (final FileNotFoundException e) {
@@ -45,7 +47,14 @@ public class BufferedWriteStream implements AbstractWriteStream {
     }
 
     @Override
-    public void close() {
-        WriteUtil.closeAndFlush(ds);
+    public void close()  {
+        try {
+            WriteUtil.closeAndFlush(ds);
+            outputStream.close();
+            bis.close();
+        } catch (final IOException e) {
+            logger.error("", e);
+        }
+
     }
 }
