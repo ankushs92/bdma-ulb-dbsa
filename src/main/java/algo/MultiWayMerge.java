@@ -6,6 +6,7 @@ import streams.read.MemMapReadStream;
 import streams.write.MemoryMappedWriteStream;
 import util.Assert;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -38,9 +39,10 @@ public class MultiWayMerge {
     }
 
     public void merge() {
+        Integer pass = 0;
         while(!streamsLocations.isEmpty() && streamsLocations.size() > 1) {
             Queue<StreamsPriorityQueue> streamsQueue = new PriorityQueue<>();
-            String mergedFileKey = "";
+            String mergedFileKey = "p" + String.valueOf(pass);
             for (int i = 0; i < d && i <= streamsLocations.size(); i++) {
                 final MemMapReadStream readStream = new MemMapReadStream(bufferSize);
                 StreamsPriorityQueue streamManager = new StreamsPriorityQueue(0, readStream);
@@ -49,23 +51,28 @@ public class MultiWayMerge {
                     streamManager.getStream().open(SORTED_DIR + fileKey + SORTED_EXT);
                     streamManager.readNext();
                     streamsQueue.add(streamManager);
-                    mergedFileKey += fileKey + "_";
+                    mergedFileKey += "_" + i ;
 
                 } catch (final IOException e) {
                     logger.error("", e);
                 }
             }
-            //We use the file key as name but in the last one we call it finalMergedFile
-            if(streamsQueue.size() > 2) {
-                mergedFileKey = mergedFileKey.substring(0, mergedFileKey.length() - 1);
-            }
-            else {
-                mergedFileKey = "finalMergedFile";
-            }
-
             mergeSort(streamsQueue, SORTED_DIR + mergedFileKey + SORTED_EXT);
             streamsLocations.add(mergedFileKey);
+            if(streamsLocations.size()<=1) {
+                logger.info("Final merge result in " + SORTED_DIR + mergedFileKey + SORTED_EXT);
+                //rename(SORTED_DIR + mergedFileKey + SORTED_EXT, "finalMerged" + pass + SORTED_EXT);
+            }
+            pass++;
         }
+    }
+
+    private File rename(final String fileName, String newName) {
+        File file = new File(fileName);
+        //System.out.println(file.getParent());
+        final File renamed = new File(file.getParent() + SORTED_DIR + newName);
+        file.renameTo(renamed);
+        return renamed;
     }
 
     public void mergeSort(Queue<StreamsPriorityQueue> kStreams, final String fileName) {
