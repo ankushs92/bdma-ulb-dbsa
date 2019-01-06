@@ -1,12 +1,12 @@
 package algo;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import streams.read.MemMapReadStream;
-import streams.write.MemoryMappedWriteStream;
+import streams.write.FWriteStream;
 import util.Assert;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -39,52 +39,44 @@ public class MultiWayMerge {
     }
 
     public void merge() {
-        Integer pass = 0;
+        final int inputBufferSize = 1024 * 1024;
         while(!streamsLocations.isEmpty() && streamsLocations.size() > 1) {
             Queue<StreamsPriorityQueue> streamsQueue = new PriorityQueue<>();
-            String mergedFileKey = "p" + String.valueOf(pass);
-            final int bufferSize = (int) Math.ceil((double) memory / d );
+            String mergedFileKey;
+//            System.out.println("Memory = " + memory + " , d = " + d + ", bufferSize = " + (int) Math.ceil((double) memory / d ));
 
             for (int i = 0; i < d && i <= streamsLocations.size(); i++) {
-                final MemMapReadStream readStream = new MemMapReadStream(bufferSize);
+                final MemMapReadStream readStream = new MemMapReadStream(inputBufferSize);
                 final StreamsPriorityQueue streamManager = new StreamsPriorityQueue(0, readStream);
                 try {
                     final String fileKey = streamsLocations.remove();
                     streamManager.getStream().open(SORTED_DIR + fileKey + SORTED_EXT);
                     streamManager.readNext();
                     streamsQueue.add(streamManager);
-                    mergedFileKey += "_" + i ;
 
                 } catch (final IOException e) {
                     logger.error("", e);
                 }
             }
+            mergedFileKey = RandomStringUtils.randomAlphanumeric(32);
+
             mergeSort(streamsQueue, SORTED_DIR + mergedFileKey + SORTED_EXT);
             streamsLocations.add(mergedFileKey);
             if(streamsLocations.size()<=1) {
                 logger.info("Final merge result in " + SORTED_DIR + mergedFileKey + SORTED_EXT);
                 //rename(SORTED_DIR + mergedFileKey + SORTED_EXT, "finalMerged" + pass + SORTED_EXT);
             }
-            pass++;
         }
-    }
-
-    private File rename(final String fileName, String newName) {
-        File file = new File(fileName);
-        //System.out.println(file.getParent());
-        final File renamed = new File(file.getParent() + SORTED_DIR + newName);
-        file.renameTo(renamed);
-        return renamed;
     }
 
     public void mergeSort(Queue<StreamsPriorityQueue> kStreams, final String fileName) {
         //Create the ouput stream. We consider size 1 for output
-        final MemoryMappedWriteStream writeStream = new MemoryMappedWriteStream(memory);
-        writeStream.create(fileName);
+        final FWriteStream fWriteStream = new FWriteStream();
+        fWriteStream.create(fileName);
         while(!kStreams.isEmpty()) {
             final StreamsPriorityQueue streamMinValue = kStreams.remove();
             final int minValue = streamMinValue.getIntValue();
-            writeStream.write(minValue);
+            fWriteStream.write(minValue);
             if(!streamMinValue.getStream().endOfStream()) {
                 streamMinValue.readNext();
                 kStreams.add(streamMinValue);
@@ -95,9 +87,9 @@ public class MultiWayMerge {
             }
         }
         //We finish the merge, close the output.
-        writeStream.close();
+        fWriteStream.close();
     }
-    public void removeTemporaryFiles(){
+    public void removeTemporaryFiles() {
         //We merged the files, we can remove them.
         while(!removeStreams.isEmpty()) {
             final StreamsPriorityQueue streamToRemove = removeStreams.remove();

@@ -7,9 +7,7 @@ import util.Util;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.String.valueOf;
@@ -28,7 +26,7 @@ public class MergeSortBenchmarkRunner {
 
     public static void main(String[] args) throws IOException {
         // N = 250000, 1000000, 8000000, 32000000
-        final List<File> files = Arrays.asList( ONE_MB, FOUR_MB, THIRTY_TWO_MB,  ONE_TWENTY_EIGHT_MB);
+        final List<File> files = Arrays.asList(ONE_MB, FOUR_MB, THIRTY_TWO_MB, ONE_TWENTY_EIGHT_MB);
         int index = 0;
         for(final File file : files) {
             final FileSize fileSize = getFileSize(file);
@@ -36,8 +34,8 @@ public class MergeSortBenchmarkRunner {
             logger.info("Reading File of size {}", fileSize);
             logger.info("Size of file in number of integers = {}", N);
             final List<Integer> memoryList = Arrays.asList(
-//                    (int)Math.ceil((double) N / 1000),
-//                    (int)Math.ceil((double) N / 100),
+                    (int)Math.ceil((double) N / 1000),
+                    (int)Math.ceil((double) N / 100),
                     (int)Math.ceil((double) N / 10),
                     (int)Math.ceil((double) N / 2),
                     N
@@ -48,6 +46,7 @@ public class MergeSortBenchmarkRunner {
                 final int noOfSublists = (int) Math.ceil(N / m);
                 final List<Integer> Ds = Arrays.asList(
                         2,
+                        30,
                         (int) Math.ceil((double) (noOfSublists / 3) ),
                         (int) Math.ceil((double) (noOfSublists / 2) ),
                         noOfSublists
@@ -55,19 +54,32 @@ public class MergeSortBenchmarkRunner {
                  .distinct().filter( d -> !d.equals(1) && !d.equals(0))
                  .collect(Collectors.toList());
 
+                Map<String, Integer> map = new HashMap<>();
+                map.put("2", 2);
+                map.put("30", 30);
+                map.put("N/3M", (int) Math.ceil((double) (noOfSublists / 3) ));
+                map.put("N/2M", (int) Math.ceil((double) (noOfSublists / 2) ));
+                map.put("N/M", noOfSublists);
+
+                map = map.entrySet().stream().filter(d -> !d.getValue().equals(1) && !d.getValue().equals(0)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
                 logger.info(" Ds {}", Ds);
-                for( int d : Ds) {
+                for(Map.Entry<String, Integer> entry : map.entrySet()) {
+                    final String category = entry.getKey();
+                    final int d = entry.getValue();
                     logger.info("m = {}, d = {}", m, d);
                     final ExternalMergeSortBenchmark benchmark = new ExternalMergeSortBenchmark(file, m, d);
                     //"index","N","Size","m","d","t"
                     final long timeTaken = benchmark.getTimeTakenToExecuteMergeSort();
-                    final String[] record = new String[]{valueOf(index), fileSize.name(), valueOf(N), valueOf(m), valueOf(d), valueOf(timeTaken)};
+                    final String[] record = new String[]{valueOf(index), fileSize.name(), valueOf(N), valueOf(m), valueOf(d), category, valueOf(timeTaken)};
                     index++;
                     Util.write(OUTPUT_CSV, Collections.singletonList(record));
                 }
             }
         };
     }
+
+
 
     private static FileSize getFileSize(final File file) {
         FileSize result = null;

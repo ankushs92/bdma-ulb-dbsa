@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import streams.interfaces.AbstractWriteStream;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
@@ -73,6 +74,12 @@ public class MemoryMappedWriteStream implements AbstractWriteStream {
         }
 
     }
+
+    public static void main(String[] args) {
+        File file = new File("/Users/ankushsharma/Desktop/code/dbsa/src/main/resources/test");
+        file.renameTo(new File(file.getPath() + file.getName() + "_new" ));
+    }
+
 }
 
 
